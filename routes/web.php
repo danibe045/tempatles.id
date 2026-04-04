@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TutorProfileController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\Admin\KatalogTutorController;
+use App\Http\Controllers\Admin\ImportTutorController; // TAMBAHKAN BARIS INI
 use App\Http\Controllers\Admin\SilabusController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\AbsensiController;
@@ -66,6 +67,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Smart Filter - rekomendasi tutor cepat
         Route::get('/katalog-tutor', [KatalogTutorController::class, 'index'])
             ->name('katalog-tutor');
+
+        // ── TAMBAHAN RUTE BARU UNTUK INPUT DATA ──────────
+        Route::post('/katalog-tutor/manual', [KatalogTutorController::class, 'storeManual'])
+            ->name('tutor.store-manual');
+            
+        Route::post('/katalog-tutor/import', [ImportTutorController::class, 'import'])
+            ->name('tutor.import');
 
         // Monitoring Silabus & Rencana Ajar
         Route::get('/silabus', [SilabusController::class, 'index'])

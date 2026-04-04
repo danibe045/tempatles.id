@@ -15,8 +15,7 @@ class TutorProfile extends Model
         'jenis_kelamin', 
         'tempat_lahir', 
         'tanggal_lahir', 
-        'provinsi', 
-        'kota', 
+        'alamat_domisili', // <-- Ini pengganti provinsi dan kota
         'pendidikan_terakhir', 
         'instansi', 
         'bidang', 
@@ -26,10 +25,10 @@ class TutorProfile extends Model
         'hari', 
         'jam', 
         'area', 
-        'tarif_per_sesi', // Tambahkan ini
+        'tarif_per_sesi',
         'setuju_pernyataan',
-        'strike_count',   // Tambahkan ini
-        'status_akun'     // Tambahkan ini
+        'strike_count',
+        'status_akun'
     ];
 
     protected $casts = [
