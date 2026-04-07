@@ -13,47 +13,48 @@ class AdminDashboardController extends Controller
         $search = $request->input('search');
         $mapel = $request->input('mapel');
 
-        // 2. Siapkan query dasar
-        $query = TutorProfile::with('user')->latest(); // latest() agar pendaftar baru ada di paling atas
+        // 2. Hitung Statistik (Dihitung dari SELURUH data tanpa filter status)
+        // Kita gunakan nama kolom 'status_akun' sesuai database barumu
+        $countPending = TutorProfile::where('status_akun', 'pending')->count();
+        $countMou     = TutorProfile::where('status_akun', 'menunggu_mou')->count();
+        $countAktif   = TutorProfile::where('status_akun', 'aktif')->count();
 
-        // 3. Logika Filter Pencarian (Cari di tabel relasi user ATAU di tabel profil)
+        // 3. Siapkan query untuk TABEL (Hanya yang BELUM aktif)
+        $query = TutorProfile::with('user')
+            ->where('status_akun', '!=', 'aktif') // Menghilangkan yang sudah aktif dari tabel
+            ->latest();
+
+        // 4. Logika Filter Pencarian (Mencari di tabel relasi User)
         if ($search) {
-            $query->where(function($q) use ($search) {
-                // Asumsi pencarian berdasarkan nama lengkap atau email
-                $q->where('nama_lengkap', 'like', "%{$search}%")
-                  ->orWhere('email_aktif', 'like', "%{$search}%");
-                
-                // Jika ingin mencari dari tabel user juga:
-                // ->orWhereHas('user', function($u) use ($search) {
-                //     $u->where('name', 'like', "%{$search}%");
-                // });
+            $query->whereHas('user', function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
             });
         }
 
-        // 4. Logika Filter Mata Pelajaran (Dropdown Mapel)
+        // 5. Logika Filter Mata Pelajaran
         if ($mapel) {
-            $query->where('bidang', $mapel);
+            $query->where('bidang', 'like', "%{$mapel}%");
         }
 
-        // 5. Hitung Statistik (Wajib query terpisah agar performa super cepat)
-        $countPending = TutorProfile::where('status_akun', 'Pending')->count();
-        $countMou = TutorProfile::where('status_akun', 'Menunggu MoU')->count();
-        $countAktif = TutorProfile::where('status_akun', 'Aktif')->count();
-
-        // 6. Ambil data pakai Pagination (misal 10 per halaman), jangan get() semua
+        // 6. Ambil data dengan Pagination
         $tutors = $query->paginate(10)->withQueryString();
 
-        // 7. Kirim semua variabel ke view agar tidak error
+        // 7. Kirim variabel ke view
         return view('admin.dashboard', compact(
-            'tutors', 'search', 'mapel', 'countPending', 'countMou', 'countAktif'
+            'tutors', 
+            'search', 
+            'mapel', 
+            'countPending', 
+            'countMou', 
+            'countAktif'
         ));
     }
 
     public function show($id)
     {
+        // Kita arahkan ke halaman detail yang profesional tadi
         $tutor = TutorProfile::with('user')->findOrFail($id);
-        
-        // Pastikan nama file blade-nya sesuai dengan yang akan kita buat
-        return view('admin.tutor-detail', compact('tutor')); 
+        return view('admin.katalog-tutor.show', compact('tutor')); 
     }
 }

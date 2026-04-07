@@ -12,51 +12,47 @@
     <div class="py-6 md:py-8">
         <div class="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-12 space-y-6 md:space-y-8">
 
-            {{-- Stats Cards (Tetap di atas) --}}
+            {{-- Stats Cards --}}
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-10">
 
                 {{-- Pending --}}
                 <div class="bg-gradient-to-br from-orange-400 to-orange-600 rounded-2xl shadow-lg shadow-orange-500/20 p-5 md:p-6 relative overflow-hidden group border border-orange-400/50">
                     <div class="absolute top-0 right-0 w-24 h-24 md:w-32 md:h-32 bg-white/10 rounded-bl-[4rem] -translate-y-4 translate-x-4 transition group-hover:scale-110 duration-500"></div>
-                    <div class="absolute bottom-0 left-0 w-12 h-12 md:w-16 md:h-16 bg-white/5 rounded-tr-full"></div>
                     <div class="relative z-10">
                         <div class="flex justify-between items-start">
                             <div class="inline-flex items-center justify-center w-10 h-10 md:w-12 md:h-12 bg-white/20 backdrop-blur-sm rounded-xl mb-3 md:mb-4 shadow-sm border border-white/20">
                                 <svg class="w-5 h-5 md:w-6 md:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                             </div>
-                            <span class="inline-flex items-center gap-1.5 px-2 py-1 bg-white/20 backdrop-blur-md rounded-lg text-[8px] md:text-[9px] font-black text-white uppercase tracking-wider shadow-sm">
-                                <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
-                                Urgent
-                            </span>
                         </div>
                         <p class="text-[9px] md:text-[10px] font-black text-orange-100 uppercase tracking-[0.2em]">Pending Review</p>
-                        <p class="text-3xl md:text-4xl font-black text-white mt-1 leading-none">{{ $tutors->where('status', 'Pending')->count() }}</p>
+                        {{-- PERBAIKAN DI SINI: Panggil variabel $countPending --}}
+                        <p class="text-3xl md:text-4xl font-black text-white mt-1 leading-none">{{ $countPending }}</p>
                     </div>
                 </div>
 
                 {{-- MoU --}}
                 <div class="bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl shadow-lg shadow-blue-600/20 p-5 md:p-6 relative overflow-hidden group border border-blue-400/50">
                     <div class="absolute top-0 right-0 w-24 h-24 md:w-32 md:h-32 bg-white/10 rounded-bl-[4rem] -translate-y-4 translate-x-4 transition group-hover:scale-110 duration-500"></div>
-                    <div class="absolute bottom-0 left-0 w-12 h-12 md:w-16 md:h-16 bg-white/5 rounded-tr-full"></div>
                     <div class="relative z-10">
                         <div class="inline-flex items-center justify-center w-10 h-10 md:w-12 md:h-12 bg-white/20 backdrop-blur-sm rounded-xl mb-3 md:mb-4 shadow-sm border border-white/20">
                             <svg class="w-5 h-5 md:w-6 md:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                         </div>
                         <p class="text-[9px] md:text-[10px] font-black text-blue-100 uppercase tracking-[0.2em]">Tahap MoU</p>
-                        <p class="text-3xl md:text-4xl font-black text-white mt-1 leading-none">{{ $tutors->where('status', 'Menunggu MoU')->count() }}</p>
+                        {{-- PERBAIKAN DI SINI: Panggil variabel $countMou --}}
+                        <p class="text-3xl md:text-4xl font-black text-white mt-1 leading-none">{{ $countMou }}</p>
                     </div>
                 </div>
 
                 {{-- Aktif --}}
                 <div class="bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-2xl shadow-lg shadow-emerald-500/20 p-5 md:p-6 relative overflow-hidden group border border-emerald-400/50 sm:col-span-2 md:col-span-1">
                     <div class="absolute top-0 right-0 w-24 h-24 md:w-32 md:h-32 bg-white/10 rounded-bl-[4rem] -translate-y-4 translate-x-4 transition group-hover:scale-110 duration-500"></div>
-                    <div class="absolute bottom-0 left-0 w-12 h-12 md:w-16 md:h-16 bg-white/5 rounded-tr-full"></div>
                     <div class="relative z-10">
                         <div class="inline-flex items-center justify-center w-10 h-10 md:w-12 md:h-12 bg-white/20 backdrop-blur-sm rounded-xl mb-3 md:mb-4 shadow-sm border border-white/20">
                             <svg class="w-5 h-5 md:w-6 md:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                         </div>
                         <p class="text-[9px] md:text-[10px] font-black text-emerald-100 uppercase tracking-[0.2em]">Total Mitra Aktif</p>
-                        <p class="text-3xl md:text-4xl font-black text-white mt-1 leading-none">{{ $tutors->where('status', 'Aktif')->count() }}</p>
+                        {{-- PERBAIKAN DI SINI: Panggil variabel $countAktif --}}
+                        <p class="text-3xl md:text-4xl font-black text-white mt-1 leading-none">{{ $countAktif }}</p>
                     </div>
                 </div>
             </div>
@@ -93,9 +89,9 @@
                             </div>
                         </div>
 
-                        {{-- Input Pencarian (Dibuat lebar 'sm:w-64' agar proporsional mengisi ruang) --}}
+                        {{-- Input Pencarian --}}
                         <div class="relative w-full sm:w-64 lg:w-72">
-                            <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Cari nama tutor..." 
+                            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama tutor..." 
                                 class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-600 focus:ring-2 focus:ring-blue-950 transition-all outline-none placeholder:font-medium placeholder:text-slate-400">
                             <div class="pointer-events-none absolute inset-y-0 left-3 flex items-center">
                                 <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
@@ -115,34 +111,34 @@
                     @forelse($tutors as $tutor)
                         @php
                             $statusConfig = [
-                                'Pending' => ['class' => 'bg-orange-50 text-orange-600 border-orange-200', 'dot' => 'bg-orange-400'],
-                                'Menunggu MoU' => ['class' => 'bg-blue-50 text-blue-700 border-blue-200', 'dot' => 'bg-blue-500'],
-                                'Aktif' => ['class' => 'bg-emerald-50 text-emerald-700 border-emerald-200', 'dot' => 'bg-emerald-500'],
+                                'pending' => ['class' => 'bg-orange-50 text-orange-600 border-orange-200', 'dot' => 'bg-orange-400'],
+                                'menunggu_mou' => ['class' => 'bg-blue-50 text-blue-700 border-blue-200', 'dot' => 'bg-blue-500'],
+                                'aktif' => ['class' => 'bg-emerald-50 text-emerald-700 border-emerald-200', 'dot' => 'bg-emerald-500'],
                             ];
-                            $cfg = $statusConfig[$tutor->status] ?? ['class' => 'bg-gray-50 text-gray-600 border-gray-200', 'dot' => 'bg-gray-400'];
+                            $cfg = $statusConfig[strtolower($tutor->status_akun)] ?? ['class' => 'bg-gray-50 text-gray-600 border-gray-200', 'dot' => 'bg-gray-400'];
                         @endphp
                         
                         <div class="p-4 space-y-4 hover:bg-slate-50 transition-colors">
                             <div class="flex justify-between items-start gap-2">
                                 <div class="flex items-center gap-3">
                                     <div class="w-10 h-10 rounded-xl bg-blue-950 flex items-center justify-center text-white font-black text-sm flex-shrink-0 shadow-sm">
-                                        {{ strtoupper(substr($tutor->nama_lengkap, 0, 1)) }}
+                                        {{ strtoupper(substr($tutor->user->name ?? 'T', 0, 1)) }}
                                     </div>
                                     <div>
-                                        <p class="font-bold text-slate-800 text-sm leading-tight line-clamp-1">{{ $tutor->nama_lengkap }}</p>
-                                        <p class="text-[10px] text-slate-400 font-mono mt-0.5 truncate max-w-[120px]">{{ $tutor->email_aktif }}</p>
+                                        <p class="font-bold text-slate-800 text-sm leading-tight line-clamp-1">{{ $tutor->user->name ?? 'Tanpa Nama' }}</p>
+                                        <p class="text-[10px] text-slate-400 font-mono mt-0.5 truncate max-w-[120px]">{{ $tutor->user->email ?? '-' }}</p>
                                     </div>
                                 </div>
                                 <span class="flex-shrink-0 inline-flex items-center gap-1 px-2 py-1 rounded-md border {{ $cfg['class'] }} text-[8px] font-black uppercase tracking-wider shadow-sm">
                                     <span class="w-1 h-1 rounded-full {{ $cfg['dot'] }}"></span>
-                                    {{ $tutor->status }}
+                                    {{ $tutor->status_akun }}
                                 </span>
                             </div>
 
                             <div class="bg-slate-50 border border-slate-100 rounded-xl p-3 flex justify-between items-center">
                                 <div>
                                     <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mb-0.5">Spesialisasi</p>
-                                    <p class="text-xs font-black text-blue-950">{{ $tutor->bidang }}</p>
+                                    <p class="text-xs font-black text-blue-950">{{ $tutor->bidang ?? 'Umum' }}</p>
                                 </div>
                                 <div class="text-right">
                                     <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mb-0.5">Tarif Sesi</p>
@@ -151,7 +147,7 @@
                             </div>
 
                             <div class="flex gap-2 w-full">
-                                <a href="https://wa.me/{{ $tutor->no_wa }}" target="_blank"
+                                <a href="https://wa.me/{{ $tutor->user->phone_number ?? '' }}" target="_blank"
                                     class="flex-1 inline-flex justify-center items-center gap-1.5 bg-emerald-50 text-emerald-600 font-black py-2 rounded-xl text-[10px] uppercase tracking-widest border border-emerald-100">
                                     WhatsApp
                                 </a>
@@ -186,12 +182,12 @@
                                 <td class="px-6 py-4">
                                     <div class="flex items-center gap-4">
                                         <div class="w-10 h-10 rounded-xl bg-blue-950 flex items-center justify-center text-white font-black text-sm flex-shrink-0 shadow-sm">
-                                            {{ strtoupper(substr($tutor->nama_lengkap, 0, 1)) }}
+                                            {{ strtoupper(substr($tutor->user->name ?? 'T', 0, 1)) }}
                                         </div>
                                         <div>
-                                            <p class="font-bold text-slate-800 text-sm leading-tight">{{ $tutor->nama_lengkap }}</p>
-                                            <p class="text-[10px] text-slate-400 font-mono mt-0.5">{{ $tutor->email_aktif }}</p>
-                                            <a href="https://wa.me/{{ $tutor->no_wa }}" target="_blank"
+                                            <p class="font-bold text-slate-800 text-sm leading-tight">{{ $tutor->user->name ?? 'Tanpa Nama' }}</p>
+                                            <p class="text-[10px] text-slate-400 font-mono mt-0.5">{{ $tutor->user->email ?? '-' }}</p>
+                                            <a href="https://wa.me/{{ $tutor->user->phone_number ?? '' }}" target="_blank"
                                                 class="inline-flex items-center gap-1 text-emerald-600 font-bold text-[9px] mt-1 hover:underline uppercase tracking-wider">
                                                 WhatsApp
                                             </a>
@@ -201,7 +197,7 @@
 
                                 <td class="px-6 py-4">
                                     <span class="px-2.5 py-1 bg-slate-100 text-slate-600 border border-slate-200 rounded-lg text-[9px] font-black uppercase tracking-wider">
-                                        {{ $tutor->bidang }}
+                                        {{ $tutor->bidang ?? 'Umum' }}
                                     </span>
                                     <p class="text-sm font-black text-slate-800 mt-2">
                                         Rp {{ number_format($tutor->tarif_per_sesi ?? 0, 0, ',', '.') }}
@@ -212,15 +208,15 @@
                                 <td class="px-6 py-4 text-center">
                                     @php
                                         $statusConfig = [
-                                            'Pending' => ['class' => 'bg-orange-50 text-orange-600 border-orange-200', 'dot' => 'bg-orange-400'],
-                                            'Menunggu MoU' => ['class' => 'bg-blue-50 text-blue-700 border-blue-200', 'dot' => 'bg-blue-500'],
-                                            'Aktif' => ['class' => 'bg-emerald-50 text-emerald-700 border-emerald-200', 'dot' => 'bg-emerald-500'],
+                                            'pending' => ['class' => 'bg-orange-50 text-orange-600 border-orange-200', 'dot' => 'bg-orange-400'],
+                                            'menunggu_mou' => ['class' => 'bg-blue-50 text-blue-700 border-blue-200', 'dot' => 'bg-blue-500'],
+                                            'aktif' => ['class' => 'bg-emerald-50 text-emerald-700 border-emerald-200', 'dot' => 'bg-emerald-500'],
                                         ];
-                                        $cfg = $statusConfig[$tutor->status] ?? ['class' => 'bg-gray-50 text-gray-600 border-gray-200', 'dot' => 'bg-gray-400'];
+                                        $cfg = $statusConfig[strtolower($tutor->status_akun)] ?? ['class' => 'bg-gray-50 text-gray-600 border-gray-200', 'dot' => 'bg-gray-400'];
                                     @endphp
                                     <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border {{ $cfg['class'] }} text-[9px] font-black uppercase tracking-wider shadow-sm">
                                         <span class="w-1.5 h-1.5 rounded-full {{ $cfg['dot'] }}"></span>
-                                        {{ $tutor->status }}
+                                        {{ $tutor->status_akun }}
                                     </span>
                                 </td>
 

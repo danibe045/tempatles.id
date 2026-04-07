@@ -105,4 +105,68 @@ class KatalogTutorController extends Controller
             return redirect()->back()->with('error', 'Gagal menyimpan data manual: ' . $e->getMessage());
         }
     }
+
+    /**
+     * MENAMPILKAN FORM EDIT TUTOR (FUNGSI BARU)
+     */
+    public function edit($id)
+    {
+        $tutor = TutorProfile::with('user')->findOrFail($id);
+        return view('admin.katalog-tutor.edit', compact('tutor'));
+    }
+
+    /**
+     * MENYIMPAN PERUBAHAN DATA TUTOR KE DATABASE (FUNGSI BARU)
+     */
+    public function update(Request $request, $id)
+    {
+        DB::beginTransaction();
+        try {
+            $tutorProfile = TutorProfile::findOrFail($id);
+            $user = $tutorProfile->user;
+
+            // 1. Update Akun User
+            $user->update([
+                'name' => $request->name,
+                'email' => $request->email,
+                'phone_number' => $request->phone_number,
+            ]);
+
+            // Jika password diisi di form edit, berarti admin mereset password tutor
+            if ($request->filled('password')) {
+                $user->update([
+                    'password' => Hash::make($request->password),
+                ]);
+            }
+
+            // 2. Format Array (Kembalikan string ber-koma jadi Array)
+            $tingkat_array = $request->tingkat_siswa ? array_map('trim', explode(',', $request->tingkat_siswa)) : [];
+            $metode_array = $request->metode ? array_map('trim', explode(',', $request->metode)) : [];
+            $hari_array = $request->hari ? array_map('trim', explode(',', $request->hari)) : [];
+
+            // 3. Update Profil Tutor
+            $tutorProfile->update([
+                'status_akun' => $request->status_akun,
+                'jenis_kelamin' => $request->jenis_kelamin,
+                'tempat_lahir' => $request->tempat_lahir,
+                'tanggal_lahir' => $request->tanggal_lahir,
+                'alamat_domisili' => $request->alamat_domisili,
+                'pendidikan_terakhir' => $request->pendidikan_terakhir,
+                'instansi' => $request->instansi,
+                'bidang' => $request->bidang,
+                'pengalaman' => $request->pengalaman,
+                'tingkat_siswa' => $tingkat_array,
+                'metode' => $metode_array,
+                'hari' => $hari_array,
+                'jam' => $request->jam ?? '-',
+                'area' => $request->area ?? '-',
+            ]);
+
+            DB::commit();
+            return redirect()->route('admin.tutor.detail', $id)->with('success', 'Data profil tutor berhasil diperbarui!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Gagal memperbarui data: ' . $e->getMessage());
+        }
+    }
 }

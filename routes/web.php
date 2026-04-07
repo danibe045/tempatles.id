@@ -61,8 +61,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/tutor/{tutor}/activate', [AdminDashboardController::class, 'activate'])
             ->name('tutor.activate');
 
-        Route::get('/tutor/{tutor}', [AdminDashboardController::class, 'show'])
+        Route::get('/tutor/{tutor}', [KatalogTutorController::class, 'show'])
             ->name('tutor.detail');
+        // TAMBAHKAN 2 BARIS INI UNTUK FITUR EDIT
+        Route::get('/tutor/{tutor}/edit', [KatalogTutorController::class, 'edit'])
+            ->name('tutor.edit');
+        Route::put('/tutor/{tutor}', [KatalogTutorController::class, 'update'])
+            ->name('tutor.update');
 
         // Smart Filter - rekomendasi tutor cepat
         Route::get('/katalog-tutor', [KatalogTutorController::class, 'index'])
@@ -80,6 +85,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->name('silabus');
         Route::get('/silabus/{silabus}', [SilabusController::class, 'show'])
             ->name('silabus.show');
+
+        // ── Manajemen Siswa (TAMBAHKAN INI) ───────────
+        Route::get('/siswa', [App\Http\Controllers\Admin\SiswaController::class, 'index'])
+            ->name('siswa.index');
+        Route::get('/siswa/{id}', [App\Http\Controllers\Admin\SiswaController::class, 'show'])
+            ->name('siswa.show');
+        Route::get('/siswa/{id}/edit', [App\Http\Controllers\Admin\SiswaController::class, 'edit'])
+            ->name('siswa.edit');
+        Route::put('/siswa/{id}', [App\Http\Controllers\Admin\SiswaController::class, 'update'])
+            ->name('siswa.update');
+        Route::delete('/siswa/{id}', [App\Http\Controllers\Admin\SiswaController::class, 'destroy'])
+            ->name('siswa.destroy');
 
         // ── Operasional ───────────────────────
 

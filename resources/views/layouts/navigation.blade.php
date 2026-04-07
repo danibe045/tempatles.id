@@ -1,10 +1,5 @@
 {{-- Layar Gelap (Backdrop) saat menu HP terbuka --}}
-<div x-show="sidebarOpen" 
-     x-transition.opacity 
-     @click="sidebarOpen = false" 
-     class="fixed inset-0 z-[90] bg-slate-900/60 backdrop-blur-sm md:hidden"
-     style="display: none;">
-</div>
+<div x-show="sidebarOpen" x-transition.opacity @click="sidebarOpen = false" class="fixed inset-0 z-[90] bg-slate-900/60 backdrop-blur-sm md:hidden" style="display: none;"></div>
 
 {{-- Sidebar Utama --}}
 <aside class="fixed inset-y-0 left-0 w-64 bg-white border-r border-slate-100 flex flex-col z-[100] transition-transform duration-300 md:translate-x-0"
@@ -45,21 +40,32 @@
             </a>
         </div>
 
-        {{-- Manajemen Tutor --}}
+        {{-- Manajemen Pengguna --}}
         <div>
-            <p class="px-3 text-[9px] font-black text-slate-400 uppercase tracking-[0.25em] mb-2">Manajemen Tutor</p>
+            <p class="px-3 text-[9px] font-black text-slate-400 uppercase tracking-[0.25em] mb-2">Manajemen Pengguna</p>
             <div class="space-y-1">
+                {{-- Menu Tutor (Eksisting) --}}
                 <a href="{{ route('admin.katalog-tutor') ?? '#' }}"
                     class="flex items-center gap-3 px-3 py-2.5 text-[10px] font-black uppercase tracking-widest transition-all duration-200 rounded-xl
                     {{ request()->routeIs('admin.katalog-tutor') ? 'bg-blue-950 text-white shadow-md shadow-blue-950/20' : 'text-slate-500 hover:text-blue-950 hover:bg-slate-50' }}">
                     <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                     Katalog Tutor
                 </a>
+                {{-- Menu Silabus (Eksisting) --}}
                 <a href="{{ route('admin.silabus') ?? '#' }}"
                     class="flex items-center gap-3 px-3 py-2.5 text-[10px] font-black uppercase tracking-widest transition-all duration-200 rounded-xl
                     {{ request()->routeIs('admin.silabus') ? 'bg-blue-950 text-white shadow-md shadow-blue-950/20' : 'text-slate-500 hover:text-blue-950 hover:bg-slate-50' }}">
                     <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                     Monitoring Silabus
+                </a>
+                {{-- Menu Siswa (BARU) --}}
+                <a href="{{ route('admin.siswa.index') ?? '#' }}"
+                    class="flex items-center gap-3 px-3 py-2.5 text-[10px] font-black uppercase tracking-widest transition-all duration-200 rounded-xl
+                    {{ request()->routeIs('admin.siswa.*') ? 'bg-blue-950 text-white shadow-md shadow-blue-950/20' : 'text-slate-500 hover:text-blue-950 hover:bg-slate-50' }}">
+                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                    Data Siswa
                 </a>
             </div>
         </div>
