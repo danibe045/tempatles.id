@@ -4,19 +4,35 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TutorProfileController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\Admin\KatalogTutorController;
-use App\Http\Controllers\Admin\ImportTutorController; // TAMBAHKAN BARIS INI
-use App\Http\Controllers\Admin\SilabusController;
+use App\Http\Controllers\Admin\ImportTutorController;
+// use App\Http\Controllers\Admin\SilabusController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\AbsensiController;
-use App\Http\Controllers\Admin\ResolusiController;
+// use App\Http\Controllers\Admin\ResolusiController;
 use App\Http\Controllers\Admin\StrikeController;
 use App\Http\Controllers\Admin\EscrowController;
 use App\Http\Controllers\Admin\PayoutController;
+// User
+use App\Http\Controllers\User\TutorDirectoryController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+// Rute Layanan Kami
+Route::get('/layanan', function () {
+    return view('user.layanan');
+})->name('layanan');
+
+// Rute Tentang Kami
+Route::get('/tentang', function () {
+    return view('user.tentang');
+})->name('tentang');
+
+// Rute Katalog Tutor untuk Murid (Publik)
+Route::get('/tutor', [TutorDirectoryController::class, 'index'])->name('katalog.publik');
+
 
 // ─────────────────────────────────────────────
 // AUTHENTICATED ROUTES
@@ -47,7 +63,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->name('dashboard');   
     
         // ── Manajemen Tutor ───────────────────
-        // Detail tutor
 
         // Approve tutor - Tahap 1 (kirim kredensial login & ID Tutor)
         Route::post('/tutor/{tutor}/approve', [AdminDashboardController::class, 'approve'])
@@ -79,12 +94,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
             
         Route::post('/katalog-tutor/import', [ImportTutorController::class, 'import'])
             ->name('tutor.import');
-
-        // Monitoring Silabus & Rencana Ajar
-        Route::get('/silabus', [SilabusController::class, 'index'])
-            ->name('silabus');
-        Route::get('/silabus/{silabus}', [SilabusController::class, 'show'])
-            ->name('silabus.show');
 
         // ── Manajemen Siswa (TAMBAHKAN INI) ───────────
         Route::get('/siswa', [App\Http\Controllers\Admin\SiswaController::class, 'index'])
@@ -119,15 +128,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/absensi/{jurnal}/override', [AbsensiController::class, 'override'])
             ->name('absensi.override');
 
-        // Pusat Resolusi Komplain
-        Route::get('/resolusi', [ResolusiController::class, 'index'])
-            ->name('resolusi');
-        Route::get('/resolusi/{komplain}', [ResolusiController::class, 'show'])
-            ->name('resolusi.show');
-        // Putuskan: teruskan dana ke tutor atau refund ke murid
-        Route::post('/resolusi/{komplain}/putuskan', [ResolusiController::class, 'putuskan'])
-            ->name('resolusi.putuskan');
-
         // ── Kendali Mutu ──────────────────────
 
         // Manajemen Strike
@@ -156,9 +156,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Mark as Paid - konfirmasi transfer sudah dilakukan admin
         Route::post('/payout/{payout}/mark-paid', [PayoutController::class, 'markPaid'])
             ->name('payout.mark-paid');
-
     });
-
 });
 
 require __DIR__.'/auth.php';

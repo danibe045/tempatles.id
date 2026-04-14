@@ -192,7 +192,8 @@
     {{-- ======================================================== --}}
     {{-- 2. MODAL TAMBAH TUTOR MANUAL --}}
     {{-- ======================================================== --}}
-    <div x-data="{ open: false }" @open-modal-manual.window="open = true" x-show="open" style="display: none;" class="relative z-[100]" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    {{-- PERBAIKAN 1: x-data agar terbuka otomatis jika ada error --}}
+    <div x-data="{ open: {{ $errors->any() ? 'true' : 'false' }} }" @open-modal-manual.window="open = true" x-show="open" style="display: none;" class="relative z-[100]" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div x-show="open" x-transition.opacity class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"></div>
         <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
             <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
@@ -218,40 +219,48 @@
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div class="md:col-span-2">
                                         <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">Nama Lengkap</label>
-                                        <input type="text" name="name" class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600" required>
+                                        <input type="text" name="name" value="{{ old('name') }}" class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600 @error('name') border-rose-500 ring-1 ring-rose-500 @enderror" required>
+                                        @error('name') <p class="text-[10px] font-bold text-rose-500 mt-1 uppercase tracking-wider">{{ $message }}</p> @enderror
                                     </div>
                                     <div>
                                         <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">Email Aktif</label>
-                                        <input type="email" name="email" class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600" required>
+                                        <input type="email" name="email" value="{{ old('email') }}" class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600 @error('email') border-rose-500 ring-1 ring-rose-500 @enderror" required>
+                                        @error('email') <p class="text-[10px] font-bold text-rose-500 mt-1 uppercase tracking-wider">{{ $message }}</p> @enderror
                                     </div>
                                     <div>
                                         <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">Password Sementara</label>
-                                        <input type="password" name="password" class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600" required>
+                                        <input type="password" name="password" class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600 @error('password') border-rose-500 ring-1 ring-rose-500 @enderror" required>
+                                        @error('password') <p class="text-[10px] font-bold text-rose-500 mt-1 uppercase tracking-wider">{{ $message }}</p> @enderror
                                     </div>
                                     <div>
                                         <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">Nomor WhatsApp</label>
-                                        <input type="text" name="phone_number" class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600" required>
+                                        <input type="text" name="phone_number" value="{{ old('phone_number') }}" class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600 @error('phone_number') border-rose-500 ring-1 ring-rose-500 @enderror" required>
+                                        @error('phone_number') <p class="text-[10px] font-bold text-rose-500 mt-1 uppercase tracking-wider">{{ $message }}</p> @enderror
                                     </div>
                                     <div>
                                         <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">Jenis Kelamin</label>
-                                        <select name="jenis_kelamin" class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600">
-                                            <option value="Laki-laki">Laki-laki</option>
-                                            <option value="Perempuan">Perempuan</option>
+                                        <select name="jenis_kelamin" class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600 @error('jenis_kelamin') border-rose-500 ring-1 ring-rose-500 @enderror">
+                                            <option value="Laki-laki" {{ old('jenis_kelamin') == 'Laki-laki' ? 'selected' : '' }}>Laki-laki</option>
+                                            <option value="Perempuan" {{ old('jenis_kelamin') == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
                                         </select>
+                                        @error('jenis_kelamin') <p class="text-[10px] font-bold text-rose-500 mt-1 uppercase tracking-wider">{{ $message }}</p> @enderror
                                     </div>
                                     <div class="grid grid-cols-2 gap-2">
                                         <div>
                                             <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">Tempat Lahir</label>
-                                            <input type="text" name="tempat_lahir" class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600">
+                                            <input type="text" name="tempat_lahir" value="{{ old('tempat_lahir') }}" class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600 @error('tempat_lahir') border-rose-500 ring-1 ring-rose-500 @enderror">
+                                            @error('tempat_lahir') <p class="text-[10px] font-bold text-rose-500 mt-1 uppercase tracking-wider">{{ $message }}</p> @enderror
                                         </div>
                                         <div>
                                             <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">Tanggal Lahir</label>
-                                            <input type="date" name="tanggal_lahir" class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600">
+                                            <input type="date" name="tanggal_lahir" value="{{ old('tanggal_lahir') }}" class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600 @error('tanggal_lahir') border-rose-500 ring-1 ring-rose-500 @enderror">
+                                            @error('tanggal_lahir') <p class="text-[10px] font-bold text-rose-500 mt-1 uppercase tracking-wider">{{ $message }}</p> @enderror
                                         </div>
                                     </div>
                                     <div class="md:col-span-2">
                                         <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">Alamat Domisili</label>
-                                        <textarea name="alamat_domisili" rows="2" class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600"></textarea>
+                                        <textarea name="alamat_domisili" rows="2" class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600 @error('alamat_domisili') border-rose-500 ring-1 ring-rose-500 @enderror">{{ old('alamat_domisili') }}</textarea>
+                                        @error('alamat_domisili') <p class="text-[10px] font-bold text-rose-500 mt-1 uppercase tracking-wider">{{ $message }}</p> @enderror
                                     </div>
                                 </div>
                             </div>
@@ -262,15 +271,15 @@
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">Pendidikan Terakhir</label>
-                                        <input type="text" name="pendidikan_terakhir" placeholder="Cth: S1 Teknik Informatika" class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600">
+                                        <input type="text" name="pendidikan_terakhir" value="{{ old('pendidikan_terakhir') }}" placeholder="Cth: S1 Teknik Informatika" class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600">
                                     </div>
                                     <div>
                                         <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">Asal Kampus / Sekolah</label>
-                                        <input type="text" name="instansi" class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600">
+                                        <input type="text" name="instansi" value="{{ old('instansi') }}" class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600">
                                     </div>
                                     <div class="md:col-span-2">
                                         <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">Pengalaman Mengajar</label>
-                                        <textarea name="pengalaman" rows="2" placeholder="Jelaskan pengalaman..." class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600"></textarea>
+                                        <textarea name="pengalaman" rows="2" placeholder="Jelaskan pengalaman..." class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600">{{ old('pengalaman') }}</textarea>
                                     </div>
                                 </div>
                             </div>
@@ -281,34 +290,49 @@
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div class="md:col-span-2">
                                         <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">Bidang Keahlian / Mata Pelajaran</label>
-                                        <input type="text" name="bidang" placeholder="Cth: Matematika, Fisika" class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600" required>
+                                        <input type="text" name="bidang" value="{{ old('bidang') }}" placeholder="Cth: Matematika, Fisika" class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600 @error('bidang') border-rose-500 ring-1 ring-rose-500 @enderror" required>
+                                        @error('bidang') <p class="text-[10px] font-bold text-rose-500 mt-1 uppercase tracking-wider">{{ $message }}</p> @enderror
                                     </div>
                                     <div>
                                         <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">Tingkat Siswa</label>
-                                        <input type="text" name="tingkat_siswa" placeholder="Cth: SD, SMP (Pisahkan koma)" class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600">
+                                        <input type="text" name="tingkat_siswa" value="{{ old('tingkat_siswa') }}" placeholder="Cth: SD, SMP (Pisahkan koma)" class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600">
                                     </div>
                                     <div>
                                         <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">Metode Mengajar</label>
-                                        <input type="text" name="metode" placeholder="Cth: Online, Offline" class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600">
+                                        <input type="text" name="metode" value="{{ old('metode') }}" placeholder="Cth: Online, Offline" class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600">
                                     </div>
                                     <div>
                                         <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">Hari Tersedia</label>
-                                        <input type="text" name="hari" placeholder="Cth: Senin, Rabu" class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600">
+                                        <input type="text" name="hari" value="{{ old('hari') }}" placeholder="Cth: Senin, Rabu" class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600">
                                     </div>
                                     <div>
                                         <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">Jam Tersedia</label>
-                                        <input type="text" name="jam" placeholder="Cth: 15.00 - 18.00" class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600">
+                                        <input type="text" name="jam" value="{{ old('jam') }}" placeholder="Cth: 15.00 - 18.00" class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600">
                                     </div>
                                     <div class="md:col-span-2">
                                         <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">Area Mengajar (Kecamatan)</label>
-                                        <input type="text" name="area" placeholder="Cth: Bangkalan, Kamal" class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600">
+                                        <input type="text" name="area" value="{{ old('area') }}" placeholder="Cth: Bangkalan, Kamal" class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600">
                                     </div>
                                     <div>
                                         <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">Status Akun</label>
                                         <select name="status_akun" class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600">
-                                            <option value="aktif">Aktif (Langsung Bisa Mengajar)</option>
-                                            <option value="pending">Pending (Review)</option>
+                                            <option value="aktif" {{ old('status_akun') == 'aktif' ? 'selected' : '' }}>Aktif (Langsung Bisa Mengajar)</option>
+                                            <option value="pending" {{ old('status_akun') == 'pending' ? 'selected' : '' }}>Pending (Review)</option>
                                         </select>
+                                    </div>
+                                    <div class="md:col-span-2 mt-2">
+                                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">Link Google Drive (Silabus & MoU)</label>
+                                        <div class="relative">
+                                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                                            </div>
+                                            <input type="url" name="link_gdrive" value="{{ old('link_gdrive') }}" placeholder="Cth: https://drive.google.com/drive/folders/..." class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600 pl-10 @error('link_gdrive') border-rose-500 ring-1 ring-rose-500 @enderror">
+                                        </div>
+                                        @error('link_gdrive') 
+                                            <p class="text-[10px] font-bold text-rose-500 mt-1 uppercase tracking-wider">{{ $message }}</p> 
+                                        @else
+                                            <p class="text-[9px] text-slate-400 font-bold mt-1.5">*Kosongkan jika tutor akan mengisinya sendiri nanti saat login.</p>
+                                        @enderror
                                     </div>
                                 </div>
                             </div>
@@ -329,24 +353,24 @@
     {{-- ======================================================== --}}
     @if(session('success') || session('error'))
     <div x-data="{ open: true }" 
-         x-show="open" 
-         style="display: none;" 
-         class="relative z-[150]" 
-         aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        x-show="open" 
+        style="display: none;" 
+        class="relative z-[150]" 
+        aria-labelledby="modal-title" role="dialog" aria-modal="true">
         
         <div x-show="open" x-transition.opacity class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"></div>
         
         <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
             <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
                 <div x-show="open" 
-                     @click.away="open = false" 
-                     x-transition:enter="ease-out duration-300" 
-                     x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" 
-                     x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" 
-                     x-transition:leave="ease-in duration-200" 
-                     x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" 
-                     x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" 
-                     class="relative transform overflow-hidden rounded-3xl bg-white text-center shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-sm border border-slate-100">
+                    @click.away="open = false" 
+                    x-transition:enter="ease-out duration-300" 
+                    x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" 
+                    x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" 
+                    x-transition:leave="ease-in duration-200" 
+                    x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" 
+                    x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" 
+                    class="relative transform overflow-hidden rounded-3xl bg-white text-center shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-sm border border-slate-100">
                     
                     <div class="bg-white px-6 pb-6 pt-8 sm:p-8">
                         {{-- Tampilan Jika Sukses --}}

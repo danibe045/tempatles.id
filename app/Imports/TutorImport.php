@@ -6,11 +6,12 @@ use App\Models\User;
 use App\Models\TutorProfile; 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\DB;
+// use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
 
-class TutorImport implements ToCollection, WithHeadingRow
+class TutorImport implements ToCollection, WithHeadingRow, WithChunkReading
 {
     public function collection(Collection $rows)
     {
@@ -21,7 +22,6 @@ class TutorImport implements ToCollection, WithHeadingRow
                 continue;
             }
 
-            DB::beginTransaction();
             try {
                 // 1. BIKIN AKUN LOGIN
                 $user = User::firstOrCreate(
@@ -66,13 +66,16 @@ class TutorImport implements ToCollection, WithHeadingRow
                     ]
                 );
 
-                DB::commit();
             } catch (\Exception $e) {
-                DB::rollBack();
                 // Buka komentar di bawah ini jika masih gagal untuk melihat pesan error dari Laravel:
                 // dd($e->getMessage()); 
                 continue; 
             }
         }
+    }
+
+    public function chunkSize(): int
+    {
+        return 50;
     }
 }

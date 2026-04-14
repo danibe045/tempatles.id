@@ -128,7 +128,6 @@
                         <h4 class="text-sm font-black text-slate-800 uppercase tracking-widest">Informasi Mengajar</h4>
                     </div>
                     
-                    {{-- Menggunakan gap-y-8 untuk jarak atas-bawah yang lega, dan gap-x-6 untuk jarak kiri-kanan --}}
                     <div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-y-8 gap-x-6">
                         
                         {{-- Tingkat Siswa --}}
@@ -228,61 +227,35 @@
                     </div>
                 </div>
 
-                {{-- KARTU 5: SILABUS --}}
+                {{-- KARTU 5: DOKUMEN SILABUS (Versi MVP) --}}
                 <div class="bg-white rounded-2xl border border-slate-200 shadow-sm">
-                    <div class="px-8 py-5 border-b border-slate-100 flex justify-between items-center">
-                        <div class="flex items-center gap-3">
-                            <div class="p-2 bg-orange-50 text-orange-500 rounded-lg">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                            </div>
-                            <h4 class="text-sm font-black text-slate-800 uppercase tracking-widest">Dokumen Silabus</h4>
+                    <div class="px-8 py-5 border-b border-slate-100 flex items-center gap-3">
+                        <div class="p-2 bg-orange-50 text-orange-500 rounded-lg">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                         </div>
-                        <a href="{{ route('admin.silabus') }}" class="text-[10px] font-bold text-blue-600 hover:text-orange-500 uppercase tracking-widest transition-colors flex items-center gap-1">
-                            Kelola
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                        </a>
+                        <h4 class="text-sm font-black text-slate-800 uppercase tracking-widest">Dokumen Silabus & MoU</h4>
                     </div>
 
-                    @php
-                        $silabuses = \App\Models\Silabus::where('tutor_id', $tutor->user_id)->latest()->get();
-                    @endphp
-
-                    <div class="p-8 space-y-4">
-                        @forelse($silabuses as $silabus)
-                            <div class="p-4 border border-slate-200 rounded-xl hover:shadow-md transition-shadow flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                                <div class="flex items-start gap-4">
-                                    <div class="w-10 h-10 shrink-0 bg-red-50 text-red-500 rounded-lg flex items-center justify-center">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                                    </div>
-                                    <div>
-                                        <h5 class="text-sm font-black text-slate-800">{{ $silabus->judul_kurikulum }}</h5>
-                                        <p class="text-[10px] font-bold text-slate-500 mt-0.5 uppercase tracking-widest">{{ $silabus->mata_pelajaran }} • {{ $silabus->tingkat_siswa }}</p>
-                                    </div>
+                    <div class="p-8">
+                        {{-- Logika MVP: Cek apakah tutor punya link GDrive atau tidak --}}
+                        @if($tutor->silabus && $tutor->silabus->isNotEmpty() && $tutor->silabus->first()->link_gdrive)
+                            <div class="p-5 border border-emerald-200 bg-emerald-50 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                                <div>
+                                    <h5 class="text-sm font-black text-emerald-800">Link Google Drive Tersedia</h5>
+                                    <p class="text-[10px] font-bold text-emerald-600 mt-0.5 uppercase tracking-widest">Berisi RPP, Silabus, atau MoU Tutor</p>
                                 </div>
-                                
-                                <div class="flex items-center gap-3 w-full sm:w-auto">
-                                    <span class="px-2.5 py-1 text-[9px] font-black uppercase tracking-widest rounded-md border 
-                                        {{ $silabus->status_persetujuan == 'disetujui' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 
-                                           ($silabus->status_persetujuan == 'revisi' ? 'bg-rose-50 text-rose-700 border-rose-200' : 'bg-amber-50 text-amber-700 border-amber-200') }}">
-                                        {{ $silabus->status_persetujuan }}
-                                    </span>
-                                    
-                                    @if($silabus->file_panduan_path)
-                                        <a href="{{ $silabus->file_panduan_path }}" target="_blank" class="px-4 py-2 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all">
-                                            Buka Drive
-                                        </a>
-                                    @endif
-                                </div>
+                                <a href="{{ $tutor->silabus->first()->link_gdrive }}" target="_blank" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[10px] font-black uppercase tracking-widest transition-all shadow-md">
+                                    Buka Folder Drive
+                                </a>
                             </div>
-                        @empty
-                            <div class="text-center py-10 bg-slate-50 rounded-xl border border-dashed border-slate-300">
+                        @else
+                            <div class="text-center py-8 bg-slate-50 rounded-xl border border-dashed border-slate-300">
                                 <svg class="w-8 h-8 text-slate-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                                <p class="text-xs font-bold text-slate-500 uppercase tracking-widest">Belum ada silabus tersimpan</p>
+                                <p class="text-xs font-bold text-slate-500 uppercase tracking-widest">Tutor Belum Mengunggah Link Silabus</p>
                             </div>
-                        @endforelse
+                        @endif
                     </div>
                 </div>
-
             </div>
         </div>
     </div>

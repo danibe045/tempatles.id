@@ -11,24 +11,24 @@ class TutorProfile extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 
-        'jenis_kelamin', 
-        'tempat_lahir', 
-        'tanggal_lahir', 
-        'alamat_domisili', // <-- Ini pengganti provinsi dan kota
-        'pendidikan_terakhir', 
-        'instansi', 
-        'bidang', 
-        'pengalaman', 
-        'tingkat_siswa', 
-        'metode', 
-        'hari', 
-        'jam', 
-        'area', 
+        'user_id',
+        'jenis_kelamin',
+        'tempat_lahir',
+        'tanggal_lahir',
+        'alamat_domisili',
+        'pendidikan_terakhir',
+        'instansi',
+        'bidang',
+        'pengalaman',
+        'tingkat_siswa',
+        'metode',
+        'hari',
+        'jam',
+        'area',
         'tarif_per_sesi',
         'setuju_pernyataan',
         'strike_count',
-        'status_akun'
+        'status_akun',
     ];
 
     protected $casts = [
@@ -43,5 +43,10 @@ class TutorProfile extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function silabus()
+    {
+        return $this->hasOne(Silabus::class, 'tutor_id', 'user_id');
     }
 }

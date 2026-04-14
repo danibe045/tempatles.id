@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\TutorProfile;
 use App\Models\User;
+use App\Models\Silabus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
@@ -21,7 +22,7 @@ class KatalogTutorController extends Controller
         $tingkat = $request->input('tingkat');
         $metode = $request->input('metode'); 
 
-        $query = TutorProfile::with('user')->where('status_akun', 'aktif');
+        $query = TutorProfile::with(['user', 'silabus'])->where('status_akun', 'aktif');
 
         // Filter berdasarkan bidang/mata pelajaran
         if ($mapel) {
@@ -51,7 +52,7 @@ class KatalogTutorController extends Controller
      */
     public function show($id)
     {
-        $tutor = TutorProfile::with('user')->findOrFail($id);
+        $tutor = TutorProfile::with(['user', 'silabus'])->findOrFail($id);
         return view('admin.katalog-tutor.show', compact('tutor'));
     }
 
@@ -60,6 +61,28 @@ class KatalogTutorController extends Controller
      */
     public function storeManual(Request $request)
     {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6',
+            'phone_number' => 'nullable|string|max:20',
+            'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
+            'tempat_lahir' => 'required|string|max:255',
+            'tanggal_lahir' => 'required|date',
+            'status_akun' => 'required|in:pending,aktif',
+            'link_gdrive' => 'nullable|url',
+        ], [
+            'name.required' => 'Nama lengkap wajib diisi.',
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.unique' => 'Pola Email sudah terdaftar. Silakan gunakan email lain.',
+            'password.required' => 'Password wajib diisi.',
+            'password.min' => 'Password minimal 6 karakter.',
+            'phone_number.max' => 'Nomor telepon terlalu panjang.',
+            'tanggal_lahir.date' => 'Format tanggal lahir tidak valid.',
+            'link_gdrive.url' => 'Link GDrive tidak valid. Pastikan format URL benar.',
+        ]);
+
         DB::beginTransaction();
         try {
             // 1. Buat Akun User
@@ -98,6 +121,14 @@ class KatalogTutorController extends Controller
                 'area' => $request->area ?? '-',
             ]);
 
+            // 4. Buat Data Silabus (Link GDrive)
+            if ($request->filled('link_gdrive')) {
+                Silabus::create([
+                    'tutor_id' => $user->id,
+                    'link_gdrive' => $request->link_gdrive,
+                ]);
+            }
+
             DB::commit();
             return redirect()->back()->with('success', 'Tutor manual berhasil ditambahkan!');
         } catch (\Exception $e) {
@@ -111,7 +142,7 @@ class KatalogTutorController extends Controller
      */
     public function edit($id)
     {
-        $tutor = TutorProfile::with('user')->findOrFail($id);
+        $tutor = TutorProfile::with(['user', 'silabus'])->findOrFail($id);
         return view('admin.katalog-tutor.edit', compact('tutor'));
     }
 
@@ -120,11 +151,28 @@ class KatalogTutorController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $tutorProfile = TutorProfile::findOrFail($id);
+        $user = $tutorProfile->user;
+
+        $request->validate([
+        'name' => 'required|string|max:255',
+        // Trik khusus: Abaikan email milik user ini sendiri agar bisa disimpan
+        'email' => 'required|email|unique:users,email,' . $user->id,
+        'phone_number' => 'nullable|string|max:20',
+        'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
+        'status_akun' => 'required|in:pending,aktif',
+        'link_gdrive' => 'nullable|url',
+    ], [
+        'name.required' => 'Nama lengkap wajib diisi.',
+        'email.required' => 'Email wajib diisi.',
+        'email.email' => 'Format email tidak valid.',
+        'email.unique' => 'Pola Email sudah terdaftar. Silakan gunakan email lain.',
+        'phone_number.max' => 'Nomor telepon terlalu panjang.',
+        'link_gdrive.url' => 'Link GDrive tidak valid. Pastikan format URL benar.',
+    ]);
+
         DB::beginTransaction();
         try {
-            $tutorProfile = TutorProfile::findOrFail($id);
-            $user = $tutorProfile->user;
-
             // 1. Update Akun User
             $user->update([
                 'name' => $request->name,
@@ -161,6 +209,14 @@ class KatalogTutorController extends Controller
                 'jam' => $request->jam ?? '-',
                 'area' => $request->area ?? '-',
             ]);
+
+            // 4. Update atau Buat Baru Link GDrive Silabus
+            if ($request->filled('link_gdrive')) {
+                Silabus::updateOrCreate(
+                    ['tutor_id' => $user->id], // Cari berdasarkan ID tutor
+                    ['link_gdrive' => $request->link_gdrive] // Update link-nya
+                );
+            }
 
             DB::commit();
             return redirect()->route('admin.tutor.detail', $id)->with('success', 'Data profil tutor berhasil diperbarui!');

@@ -30,19 +30,23 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="md:col-span-2">
                             <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Nama Lengkap</label>
-                            <input type="text" name="name" value="{{ old('name', $tutor->user->name) }}" class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600" required>
+                            <input type="text" name="name" value="{{ old('name', $tutor->user->name) }}" class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600 @error('name') border-rose-500 ring-1 ring-rose-500 @enderror" required>
+                            @error('name') <p class="text-[10px] font-bold text-rose-500 mt-1 uppercase tracking-wider">{{ $message }}</p> @enderror
                         </div>
                         <div>
                             <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Email Aktif</label>
-                            <input type="email" name="email" value="{{ old('email', $tutor->user->email) }}" class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600" required>
+                            <input type="email" name="email" value="{{ old('email', $tutor->user->email) }}" class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600 @error('email') border-rose-500 ring-1 ring-rose-500 @enderror" required>
+                            @error('email') <p class="text-[10px] font-bold text-rose-500 mt-1 uppercase tracking-wider">{{ $message }}</p> @enderror
                         </div>
                         <div>
                             <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Nomor WhatsApp</label>
-                            <input type="text" name="phone_number" value="{{ old('phone_number', $tutor->user->phone_number) }}" class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600" required>
+                            <input type="text" name="phone_number" value="{{ old('phone_number', $tutor->user->phone_number) }}" class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600 @error('phone_number') border-rose-500 ring-1 ring-rose-500 @enderror" required>
+                            @error('phone_number') <p class="text-[10px] font-bold text-rose-500 mt-1 uppercase tracking-wider">{{ $message }}</p> @enderror
                         </div>
                         <div class="md:col-span-2 p-4 bg-amber-50 border border-amber-100 rounded-xl">
                             <label class="block text-[10px] font-black text-amber-700 uppercase tracking-widest mb-2">Reset Password (Opsional)</label>
-                            <input type="password" name="password" placeholder="Kosongkan jika tidak ingin mengubah password" class="w-full bg-white border-amber-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-amber-500 placeholder:font-normal placeholder:text-slate-400">
+                            <input type="password" name="password" placeholder="Kosongkan jika tidak ingin mengubah password" class="w-full bg-white border-amber-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-amber-500 placeholder:font-normal placeholder:text-slate-400 @error('password') border-rose-500 ring-1 ring-rose-500 @enderror">
+                            @error('password') <p class="text-[10px] font-bold text-rose-500 mt-1 uppercase tracking-wider">{{ $message }}</p> @enderror
                         </div>
                         <div>
                             <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Jenis Kelamin</label>
@@ -99,7 +103,8 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="md:col-span-2">
                             <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Bidang Keahlian / Mata Pelajaran</label>
-                            <input type="text" name="bidang" value="{{ old('bidang', $tutor->bidang) }}" class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600" required>
+                            <input type="text" name="bidang" value="{{ old('bidang', $tutor->bidang) }}" class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600 @error('bidang') border-rose-500 ring-1 ring-rose-500 @enderror" required>
+                            @error('bidang') <p class="text-[10px] font-bold text-rose-500 mt-1 uppercase tracking-wider">{{ $message }}</p> @enderror
                         </div>
                         
                         {{-- Konversi Array kembali jadi String dipisah koma untuk form --}}
@@ -132,9 +137,23 @@
                         <div class="md:col-span-2 mt-4 p-5 bg-blue-50 border-2 border-blue-100 rounded-2xl">
                             <label class="block text-[10px] font-black text-blue-800 uppercase tracking-widest mb-2">Status Akun Tutor</label>
                             <select name="status_akun" class="w-full bg-white border-blue-200 rounded-xl text-sm font-black text-blue-900 focus:ring-2 focus:ring-blue-600 shadow-sm py-3">
-                                <option value="aktif" {{ $tutor->status_akun == 'aktif' ? 'selected' : '' }}>🟢 AKTIF (Tampil di Katalog & Siap Mengajar)</option>
-                                <option value="pending" {{ $tutor->status_akun == 'pending' ? 'selected' : '' }}>🟡 PENDING (Disembunyikan sementara)</option>
+                                <option value="aktif" {{ old('status_akun', $tutor->status_akun) == 'aktif' ? 'selected' : '' }}>🟢 AKTIF (Tampil di Katalog & Siap Mengajar)</option>
+                                <option value="pending" {{ old('status_akun', $tutor->status_akun) == 'pending' ? 'selected' : '' }}>🟡 PENDING (Disembunyikan sementara)</option>
                             </select>
+                        </div>
+
+                        {{-- TAMBAHAN: INPUT LINK GDRIVE UNTUK EDIT --}}
+                        <div class="md:col-span-2 mb-4 mt-2">
+                            <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Link Google Drive (Silabus & MoU)</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                                </div>
+                                <input type="url" name="link_gdrive" value="{{ old('link_gdrive', $tutor->silabus?->link_gdrive ?? '') }}" placeholder="Cth: https://drive.google.com/..." class="w-full bg-slate-50 border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-blue-600 pl-10 @error('link_gdrive') border-rose-500 ring-1 ring-rose-500 @enderror">
+                            </div>
+                            @error('link_gdrive') 
+                                <p class="text-[10px] font-bold text-rose-500 mt-1 uppercase tracking-wider">{{ $message }}</p> 
+                            @enderror
                         </div>
                     </div>
                 </div>
@@ -151,6 +170,7 @@
             </form>
         </div>
     </div>
+    
     {{-- ======================================================== --}}
     {{-- MODAL NOTIFIKASI (SUKSES / GAGAL) --}}
     {{-- ======================================================== --}}

@@ -13,8 +13,10 @@ class ImportTutorController extends Controller
     {
         // 1. Validasi file (Pastikan file yang diupload adalah Excel/CSV)
         $request->validate([
-            'file' => 'required|mimes:xlsx,xls,csv|max:5120', // Maksimal ukuran 5MB
+            'file' => 'required|mimes:xlsx,xls,csv|max:5120',
         ]);
+
+        set_time_limit(300); // Perpanjang waktu eksekusi jika file besar
 
         try {
             // 2. Lempar file ke Mesin Import (TutorImport)
