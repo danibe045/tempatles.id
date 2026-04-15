@@ -29,8 +29,8 @@
 
         <div class="hidden lg:flex items-center space-x-10 text-[13px] font-bold uppercase tracking-widest text-slate-500">
             <a href="/" class="hover:text-blue-600 transition-colors">Home</a>
-            <a href="#" class="hover:text-blue-600 transition-colors">Layanan Kami</a>
-            <a href="#" class="hover:text-blue-600 transition-colors">Tentang</a>
+            <a href="{{ route('layanan') }}" class="hover:text-blue-600 transition-colors">Layanan Kami</a>
+            <a href="{{ route('tentang') }}" class="hover:text-blue-600 transition-colors">Tentang</a>
             <a href="{{ route('katalog.publik') }}" class="text-blue-600 border-b-2 border-blue-600 pb-1">Cari Tutor</a>
         </div>
 
