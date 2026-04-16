@@ -10,6 +10,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TutorProfileController;
 use App\Http\Controllers\User\TutorDirectoryController;
+use App\Http\Controllers\User\PackageTutorController;
 
 // Admin
 use App\Http\Controllers\AdminDashboardController;
@@ -61,6 +62,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // 3. Pendaftaran Profil Tutor (Setelah user biasa/murid ingin jadi tutor)
     Route::get('/tutor/register', [TutorProfileController::class, 'create'])->name('tutor.register');
     Route::post('/tutor/register', [TutorProfileController::class, 'store'])->name('tutor.store');
+
+    // ─────────────────────────────────────────
+    // TUTOR ROUTES (Fitur Etalase Paket Maharani)
+    // ─────────────────────────────────────────
+    Route::prefix('tutor')->name('tutor.')->group(function () {
+        // Manajemen Paket (Etalase Produk Tutor)
+        Route::get('/my-packages', [PackageTutorController::class, 'index'])->name('packages.index');
+        Route::post('/my-packages', [PackageTutorController::class, 'store'])->name('packages.store');
+        
+        // 👇 INI BARIS YANG KURANG MAS DANI (Route untuk Switch On/Off) 👇
+        Route::patch('/my-packages/{id}/toggle', [PackageTutorController::class, 'toggleActive'])->name('packages.toggle');
+        
+        Route::delete('/my-packages/{id}', [PackageTutorController::class, 'destroy'])->name('packages.destroy');
+    });
 
 
     // ─────────────────────────────────────────
