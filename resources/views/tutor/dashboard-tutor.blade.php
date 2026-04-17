@@ -34,7 +34,7 @@
                     </div>
                 </div>
                 
-                {{-- PERBAIKAN TOMBOL LOGOUT --}}
+                {{-- TOMBOL LOGOUT --}}
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="group flex items-center gap-2 bg-rose-50 border border-rose-100 hover:bg-rose-500 text-rose-500 hover:text-white px-4 py-2 rounded-xl font-bold text-xs transition-all duration-300 shadow-sm">
@@ -67,42 +67,36 @@
         </div>
         @endif
 
-        {{-- HERO SECTION --}}
-        <div class="bg-blue-950 rounded-[2rem] p-8 lg:p-12 mb-8 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8 shadow-xl shadow-blue-950/10">
+        {{-- HERO SECTION (Bersih, Tanpa Tombol Pintu Kembar) --}}
+        <div class="bg-blue-950 rounded-[2rem] p-8 lg:p-12 mb-8 relative overflow-hidden shadow-xl shadow-blue-950/10">
             <div class="absolute inset-0 bg-pattern opacity-10"></div>
             <div class="absolute -top-40 -right-40 w-96 h-96 bg-orange-500 rounded-full blur-[100px] opacity-20"></div>
             
             <div class="relative z-10 text-center md:text-left">
                 <p class="text-orange-400 font-bold mb-2 uppercase tracking-[0.2em] text-[10px]">Dashboard Pengajar</p>
                 <h1 class="text-3xl lg:text-4xl font-black text-white mb-3">Siap Menginspirasi Hari Ini?</h1>
-                <p class="text-blue-200 font-medium text-sm max-w-lg">Jadilah versi terbaik dirimu. Atur jadwal, kelola kelas, dan pantau penghasilanmu dengan mudah.</p>
-            </div>
-            
-            <div class="relative z-10 flex gap-3 w-full md:w-auto">
-                <a href="{{ route('tutor.packages.index') }}" class="text-center flex-1 md:flex-none bg-orange-500 hover:bg-orange-400 text-white px-6 py-3.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all shadow-lg shadow-orange-500/30">
-                    Buat Paket Baru
-                </a>
+                <p class="text-blue-200 font-medium text-sm max-w-lg">Jadilah versi terbaik dirimu. Atur jadwal, kelola kelas, dan pantau penghasilanmu dengan mudah di satu tempat.</p>
             </div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
-            {{-- KIRI: PESANAN, JURNAL, & ETALASE PAKET --}}
+            {{-- KOLOM KIRI: JALAN PINTAS, PESANAN, & JURNAL --}}
             <div class="lg:col-span-2 space-y-8">
                 
-                {{-- ETALASE PAKET (DIPINDAH KE KIRI UNTUK KESEIMBANGAN) --}}
-                <a href="#" class="block bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm hover:border-blue-300 transition-all group">
+                {{-- ETALASE PAKET (Pintu Masuk Utama) --}}
+                <a href="{{ route('tutor.packages.index') }}" class="block bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm hover:border-blue-300 transition-all group">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center">
+                            <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
                             </div>
                             <div>
-                                <p class="font-black text-slate-800 text-lg">Kelola Etalase Paket</p>
-                                <p class="text-sm text-slate-500">Anda memiliki <span class="font-bold text-blue-600">{{ $totalPaket ?? 0 }} kelas aktif</span> yang siap dipesan murid.</p>
+                                <p class="font-black text-slate-800 text-lg group-hover:text-blue-600 transition-colors">Kelola Etalase Paket</p>
+                                <p class="text-sm text-slate-500">Anda memiliki <span class="font-bold text-blue-600">{{ $totalPaket ?? 0 }} paket aktif</span> yang siap dipesan murid.</p>
                             </div>
                         </div>
-                        <div class="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center text-slate-400 group-hover:bg-blue-50 group-hover:text-blue-600 transition-all">
+                        <div class="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center text-slate-400 group-hover:bg-blue-100 group-hover:text-blue-600 transition-all shadow-sm">
                             <svg class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
                         </div>
                     </div>
@@ -140,12 +134,10 @@
                                 </div>
                                 <div class="text-center md:text-left">
                                     <h3 class="text-lg font-black text-slate-800 mb-2">Toko Anda Sedang Sepi!</h3>
-                                    <p class="text-slate-500 text-sm mb-4 leading-relaxed">Belum ada murid yang mengetuk pintu. Pastikan Anda melakukan 3 langkah ini agar profil Anda dilirik oleh ratusan murid:</p>
-                                    <div class="flex flex-wrap gap-2 justify-center md:justify-start">
-                                        <span class="px-3 py-1 bg-white border border-slate-200 text-xs font-bold text-slate-600 rounded-full">1. Lengkapi Biodata</span>
-                                        <span class="px-3 py-1 bg-white border border-slate-200 text-xs font-bold text-slate-600 rounded-full">2. Buat Paket Menarik</span>
-                                        <span class="px-3 py-1 bg-white border border-slate-200 text-xs font-bold text-slate-600 rounded-full">3. Pasang Foto Profesional</span>
-                                    </div>
+                                    <p class="text-slate-500 text-sm mb-4 leading-relaxed">Belum ada murid yang mengetuk pintu. Pastikan Anda merancang etalase paket Anda agar dilirik oleh ratusan murid.</p>
+                                    <a href="{{ route('tutor.packages.index') }}" class="inline-block bg-white border border-slate-200 text-xs font-bold text-blue-600 px-4 py-2 rounded-full hover:bg-blue-50 transition-colors">
+                                        Mulai Kelola Etalase &rarr;
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -196,7 +188,7 @@
                 </div>
             </div>
 
-            {{-- KANAN: PROFIL, FINANSIAL & REPUTASI --}}
+            {{-- KOLOM KANAN: PROFIL, FINANSIAL & REPUTASI --}}
             <div class="space-y-6">
                 
                 {{-- KARTU PROFIL TUTOR --}}
