@@ -25,8 +25,9 @@ class PackageTutorController extends Controller
             'jumlah_sesi' => 'required|integer|min:1',
             'domisili' => 'required|string',
             'metode' => 'required|in:Online,Offline',
-            'harga_nett' => 'required|integer|min:50000', // Minimum rasional Rp 50.000
-            'deskripsi' => 'required|string|max:1000', // Wajib ada deskripsi
+            'harga_nett' => 'required|integer|min:50000', 
+            'deskripsi' => 'required|string|max:1000', 
+            'kuota' => 'required|integer|min:1', // Validasi Kuota
         ]);
 
         TutorPackage::create([
@@ -38,7 +39,8 @@ class PackageTutorController extends Controller
             'metode' => $request->metode,
             'harga_nett' => $request->harga_nett,
             'deskripsi' => $request->deskripsi,
-            'is_active' => true, // Default saat dibuat otomatis aktif
+            'kuota' => $request->kuota, // Simpan Kuota
+            'is_active' => true, 
         ]);
 
         return redirect()->back()->with('success', 'Paket belajar berhasil ditambahkan ke etalase!');

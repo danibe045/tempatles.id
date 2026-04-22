@@ -18,7 +18,8 @@ class TutorPackage extends Model
         'metode', 
         'harga_nett',
         'deskripsi',
-        'is_active'
+        'is_active',
+        'kuota'
     ];
 
     // Mengubah nilai is_active menjadi boolean (true/false) secara otomatis

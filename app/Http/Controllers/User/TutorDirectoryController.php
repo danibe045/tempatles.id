@@ -28,6 +28,22 @@ class TutorDirectoryController extends Controller
         $tutors = $query->latest()->paginate(12);
 
         // 2. Berubah jadi folder 'user'
-        return view('user.tutor-directory', compact('tutors')); 
+        return view('tutor-directory', compact('tutors')); 
     }
+
+    public function show($id)
+    {
+        // Ambil data tutor beserta user dan paketnya
+        $tutor = \App\Models\TutorProfile::with(['user', 'packages'])->findOrFail($id);
+
+        // UBAH BARIS INI (Tambahkan 'user.')
+        return view('user.tutor-detail', compact('tutor'));
+    }
+
+    public function storeOrder(Request $request, $id)
+    {
+        // Logika simpan pesanan sementara
+        return back()->with('success', 'Pesanan berhasil dibuat! Menunggu konfirmasi tutor.');
+    }
+
 }

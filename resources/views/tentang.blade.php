@@ -1,51 +1,8 @@
-<!DOCTYPE html>
-<html lang="id">
+@extends('layouts.main')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tentang Kami - tempatles.id</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <link rel="icon" href="{{ asset('img/logo.png') }}" type="image/png">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
-    </style>
-</head>
+@section('title', 'Tentang Kami - tempatles.id')
 
-<body class="bg-slate-50 text-slate-900 antialiased overflow-x-hidden flex flex-col min-h-screen">
-
-    {{-- NAVBAR --}}
-    <nav class="sticky top-0 z-50 flex items-center justify-between px-6 md:px-12 py-4 bg-white/80 backdrop-blur-md border-b border-slate-100 shadow-sm">
-        <div class="flex items-center gap-2">
-            <a href="/" class="flex items-center gap-3 group">
-                <img src="{{ asset('img/logo.png') }}" alt="Logo" class="h-12 w-auto transition-transform group-hover:scale-105">
-                <div class="hidden sm:block">
-                    <span class="font-black text-blue-950 text-xl tracking-tight leading-none">tempatles</span>
-                    <span class="font-black text-orange-500 text-xl tracking-tight leading-none">.id</span>
-                </div>
-            </a>
-        </div>
-
-        <div class="hidden lg:flex items-center space-x-10 text-[13px] font-bold uppercase tracking-widest text-slate-500">
-            <a href="/" class="hover:text-blue-600 transition-colors">Home</a>
-            <a href="{{ route('katalog.publik') }}" class="hover:text-blue-600 transition-colors">Cari Tutor</a>
-            <a href="{{ route('layanan') }}" class="hover:text-blue-600 transition-colors">Layanan Kami</a>
-            <a href="{{ route('tentang') }}" class="text-blue-600 border-b-2 border-blue-600 pb-1">Tentang</a>
-        </div>
-
-        <div>
-            @auth
-                <a href="{{ url('/dashboard') }}" class="bg-blue-950 text-white px-7 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-orange-500 transition-all shadow-lg shadow-blue-950/20">Dashboard</a>
-            @else
-                <div class="flex items-center gap-4">
-                    <a href="{{ route('login') }}" class="text-xs font-black uppercase tracking-widest text-slate-600 hover:text-blue-600 transition-colors">Masuk</a>
-                    <a href="{{ route('register') }}" class="bg-blue-950 text-white px-7 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-orange-500 transition-all shadow-lg shadow-blue-950/20">Daftar Gratis</a>
-                </div>
-            @endauth
-        </div>
-    </nav>
-
+@section('content')
     <main class="flex-grow">
         {{-- SECTION 1: VISI & MISI --}}
         <section class="py-24 bg-white overflow-hidden">
@@ -128,29 +85,4 @@
             </div>
         </section>
     </main>
-
-    {{-- FOOTER MENDETAIL (SAMA DENGAN FOOTER SEBELUMNYA) --}}
-    <footer class="bg-slate-50 pt-20 border-t border-slate-200">
-        <div class="max-w-4xl mx-auto px-6 text-center">
-            <a href="/" class="inline-block mb-6">
-                <img src="{{ asset('img/logo.png') }}" alt="tempatles.id Logo" class="h-20 mx-auto">
-            </a>
-            <p class="text-slate-500 text-sm md:text-base leading-relaxed mb-8 max-w-2xl mx-auto font-medium">
-                Tempatles.id membantu tutor mendapatkan murid les tanpa perlu pasang iklan. Daftar gratis, fleksibel memilih murid, dan sistem kerja transparan untuk tutor di seluruh Indonesia.
-            </p>
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
-                <a href="{{ route('katalog.publik') }}" class="w-full sm:w-auto bg-white border-2 border-blue-600 text-blue-600 hover:bg-blue-50 font-bold px-8 py-3 rounded-full transition-all">Mulai Cari Tutor</a>
-                <a href="{{ route('register') }}?role=tutor" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold px-8 py-3 rounded-full transition-all shadow-lg shadow-blue-600/30">Daftar Jadi Tutor</a>
-            </div>
-            <div class="flex flex-wrap items-center justify-center gap-x-10 gap-y-4 text-sm font-semibold text-slate-700 mb-12">
-                <a href="#" class="hover:text-blue-600 transition-colors">Kebijakan Privasi</a>
-                <a href="#" class="hover:text-blue-600 transition-colors">Syarat dan Ketentuan</a>
-            </div>
-        </div>
-        <div class="bg-slate-200/50 py-6 text-center text-sm font-medium text-slate-500">
-            Copyright &copy; <span class="text-blue-600">tempatles.id</span> | Belajar jadi lebih mudah
-        </div>
-    </footer>
-
-</body>
-</html>
+@endsection

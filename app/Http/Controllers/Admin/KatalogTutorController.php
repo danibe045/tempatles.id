@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\TutorProfile;
 use App\Models\User;
-use App\Models\Silabus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
@@ -22,19 +21,17 @@ class KatalogTutorController extends Controller
         $tingkat = $request->input('tingkat');
         $metode = $request->input('metode'); 
 
-        $query = TutorProfile::with(['user', 'silabus'])->where('status_akun', 'aktif');
+        // PERBAIKAN: Hapus 'silabus' dari dalam with() karena link GDrive sudah menyatu di TutorProfile
+        $query = TutorProfile::with('user')->where('status_akun', 'aktif');
 
-        // Filter berdasarkan bidang/mata pelajaran
         if ($mapel) {
             $query->where('bidang', 'like', "%{$mapel}%");
         }
         
-        // Filter domisili (sesuai nama kolom di DB yang baru)
         if ($kota) {
             $query->where('alamat_domisili', 'like', "%{$kota}%");
         }
         
-        // Filter array/JSON menggunakan whereJsonContains
         if ($tingkat) {
             $query->whereJsonContains('tingkat_siswa', $tingkat);
         }
@@ -52,12 +49,13 @@ class KatalogTutorController extends Controller
      */
     public function show($id)
     {
-        $tutor = TutorProfile::with(['user', 'silabus'])->findOrFail($id);
+        // PERBAIKAN: Hapus 'silabus' dari relasi
+        $tutor = TutorProfile::with('user')->findOrFail($id);
         return view('admin.katalog-tutor.show', compact('tutor'));
     }
 
     /**
-     * MENYIMPAN DATA TUTOR DARI FORM MANUAL
+     * MENYIMPAN DATA TUTOR DARI FORM MANUAL OLEH ADMIN
      */
     public function storeManual(Request $request)
     {
@@ -112,22 +110,16 @@ class KatalogTutorController extends Controller
                 'bidang' => $request->bidang,
                 'pengalaman' => $request->pengalaman,
                 
-                // Masukkan sebagai Array, karena di Model sudah di-$casts jadi 'array'
                 'tingkat_siswa' => $tingkat_array,
                 'metode' => $metode_array,
                 'hari' => $hari_array,
                 
                 'jam' => $request->jam ?? '-',
                 'area' => $request->area ?? '-',
+                
+                // PERBAIKAN: Link GDrive langsung disimpan di sini
+                'link_silabus' => $request->link_gdrive, 
             ]);
-
-            // 4. Buat Data Silabus (Link GDrive)
-            if ($request->filled('link_gdrive')) {
-                Silabus::create([
-                    'tutor_id' => $user->id,
-                    'link_gdrive' => $request->link_gdrive,
-                ]);
-            }
 
             DB::commit();
             return redirect()->back()->with('success', 'Tutor manual berhasil ditambahkan!');
@@ -138,16 +130,17 @@ class KatalogTutorController extends Controller
     }
 
     /**
-     * MENAMPILKAN FORM EDIT TUTOR (FUNGSI BARU)
+     * MENAMPILKAN FORM EDIT TUTOR 
      */
     public function edit($id)
     {
-        $tutor = TutorProfile::with(['user', 'silabus'])->findOrFail($id);
+        // PERBAIKAN: Hapus 'silabus' dari relasi
+        $tutor = TutorProfile::with('user')->findOrFail($id);
         return view('admin.katalog-tutor.edit', compact('tutor'));
     }
 
     /**
-     * MENYIMPAN PERUBAHAN DATA TUTOR KE DATABASE (FUNGSI BARU)
+     * MENYIMPAN PERUBAHAN DATA TUTOR KE DATABASE 
      */
     public function update(Request $request, $id)
     {
@@ -155,21 +148,20 @@ class KatalogTutorController extends Controller
         $user = $tutorProfile->user;
 
         $request->validate([
-        'name' => 'required|string|max:255',
-        // Trik khusus: Abaikan email milik user ini sendiri agar bisa disimpan
-        'email' => 'required|email|unique:users,email,' . $user->id,
-        'phone_number' => 'nullable|string|max:20',
-        'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
-        'status_akun' => 'required|in:pending,aktif',
-        'link_gdrive' => 'nullable|url',
-    ], [
-        'name.required' => 'Nama lengkap wajib diisi.',
-        'email.required' => 'Email wajib diisi.',
-        'email.email' => 'Format email tidak valid.',
-        'email.unique' => 'Pola Email sudah terdaftar. Silakan gunakan email lain.',
-        'phone_number.max' => 'Nomor telepon terlalu panjang.',
-        'link_gdrive.url' => 'Link GDrive tidak valid. Pastikan format URL benar.',
-    ]);
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'phone_number' => 'nullable|string|max:20',
+            'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
+            'status_akun' => 'required|in:pending,aktif',
+            'link_gdrive' => 'nullable|url',
+        ], [
+            'name.required' => 'Nama lengkap wajib diisi.',
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.unique' => 'Pola Email sudah terdaftar. Silakan gunakan email lain.',
+            'phone_number.max' => 'Nomor telepon terlalu panjang.',
+            'link_gdrive.url' => 'Link GDrive tidak valid. Pastikan format URL benar.',
+        ]);
 
         DB::beginTransaction();
         try {
@@ -180,14 +172,13 @@ class KatalogTutorController extends Controller
                 'phone_number' => $request->phone_number,
             ]);
 
-            // Jika password diisi di form edit, berarti admin mereset password tutor
             if ($request->filled('password')) {
                 $user->update([
                     'password' => Hash::make($request->password),
                 ]);
             }
 
-            // 2. Format Array (Kembalikan string ber-koma jadi Array)
+            // 2. Format Array 
             $tingkat_array = $request->tingkat_siswa ? array_map('trim', explode(',', $request->tingkat_siswa)) : [];
             $metode_array = $request->metode ? array_map('trim', explode(',', $request->metode)) : [];
             $hari_array = $request->hari ? array_map('trim', explode(',', $request->hari)) : [];
@@ -208,15 +199,10 @@ class KatalogTutorController extends Controller
                 'hari' => $hari_array,
                 'jam' => $request->jam ?? '-',
                 'area' => $request->area ?? '-',
+                
+                // PERBAIKAN: Link GDrive langsung diupdate di sini
+                'link_silabus' => $request->link_gdrive, 
             ]);
-
-            // 4. Update atau Buat Baru Link GDrive Silabus
-            if ($request->filled('link_gdrive')) {
-                Silabus::updateOrCreate(
-                    ['tutor_id' => $user->id], // Cari berdasarkan ID tutor
-                    ['link_gdrive' => $request->link_gdrive] // Update link-nya
-                );
-            }
 
             DB::commit();
             return redirect()->route('admin.tutor.detail', $id)->with('success', 'Data profil tutor berhasil diperbarui!');
