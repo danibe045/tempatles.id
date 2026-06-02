@@ -89,7 +89,7 @@
                 class="flex items-center gap-3 px-3 py-2.5 text-[10px] font-black uppercase tracking-widest transition-all duration-200 rounded-xl
                 {{ request()->routeIs('admin.strike') ? 'bg-blue-950 text-white shadow-md shadow-blue-950/20' : 'text-slate-500 hover:text-blue-950 hover:bg-slate-50' }}">
                 <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-                Manajemen Strike
+                Komplain & Strike
             </a>
         </div>
 
@@ -107,7 +107,7 @@
                     class="flex items-center gap-3 px-3 py-2.5 text-[10px] font-black uppercase tracking-widest transition-all duration-200 rounded-xl
                     {{ request()->routeIs('admin.payout') ? 'bg-blue-950 text-white shadow-md shadow-blue-950/20' : 'text-slate-500 hover:text-blue-950 hover:bg-slate-50' }}">
                     <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-                    Pencairan Dana (Payout)
+                    Pencairan Dana - Payout
                 </a>
             </div>
         </div>

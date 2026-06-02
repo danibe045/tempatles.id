@@ -6,41 +6,42 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * Run the migrations.
+     */
     public function up(): void
     {
         Schema::create('tutor_profiles', function (Blueprint $table) {
             $table->id();
-            // Kunci Relasi ke tabel users
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            
-            // Latar Belakang & Demografi
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            // DATA DEMOGRAFI & LATAR BELAKANG
             $table->enum('jenis_kelamin', ['Laki-laki', 'Perempuan']);
             $table->string('tempat_lahir');
             $table->date('tanggal_lahir');
-            $table->string('provinsi');
-            $table->string('kota');
+            $table->text('alamat_domisili');
             $table->string('pendidikan_terakhir');
             $table->string('instansi'); 
             $table->string('bidang'); 
             $table->text('pengalaman'); 
+            $table->boolean('is_manual')->default(false);
+            $table->string('link')->nullable()->comment('Link Google Drive PDF Silabus');
             
-            // Katalog & Harga
-            $table->json('tingkat_siswa'); // Array: SD, SMP, SMA, Umum
-            $table->json('metode'); // Array: Online, Offline
-            $table->json('hari'); // Array ketersediaan hari
-            $table->string('jam'); // Ketersediaan jam
-            $table->string('area'); // Jangkauan lokasi
-            $table->integer('tarif_per_sesi')->default(0); 
-            
-            // Status Akun & Kendali Mutu
+            // Status Akun & Mutu Kendali
             $table->boolean('setuju_pernyataan')->default(false); 
-            $table->integer('strike_count')->default(0); // Indikator 3-Strike
-            $table->enum('status_akun', ['pending', 'menunggu_mou', 'aktif', 'dibekukan', 'banned'])->default('pending');
-            
+            $table->integer('strike_count')->default(0); 
+            $table->enum('status_akun', [
+                'menunggu_mou', 
+                'aktif', 
+                'dibekukan', 
+                'banned'
+            ])->default('menunggu_mou');
             $table->timestamps();
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
         Schema::dropIfExists('tutor_profiles');

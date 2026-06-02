@@ -16,15 +16,19 @@ class TutorPackage extends Model
         'jumlah_sesi', 
         'domisili', 
         'metode', 
+        'hari',
+        'jam',
         'harga_nett',
         'deskripsi',
         'is_active',
         'kuota'
     ];
 
-    // Mengubah nilai is_active menjadi boolean (true/false) secara otomatis
     protected $casts = [
         'is_active' => 'boolean',
+        'jumlah_sesi' => 'integer',
+        'harga_nett' => 'integer',
+        'kuota' => 'integer',
     ];
 
     public function user(): BelongsTo

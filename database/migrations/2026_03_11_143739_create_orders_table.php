@@ -11,37 +11,39 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             
-            // 1. Relasi ke tabel users (Siapa muridnya, siapa tutornya)
+            // 1. Relasi (Tambahkan tutor_package_id)
             $table->foreignId('murid_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('tutor_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('tutor_package_id')->nullable()->constrained('tutor_packages')->onDelete('set null');
             
             // 2. Detail Pesanan
             $table->string('mata_pelajaran');
-            $table->integer('jumlah_sesi'); // Contoh: 4 atau 8 sesi
+            $table->integer('jumlah_sesi');
             
-            // 3. Rincian Biaya (Disimpan sebagai snapshot agar harga tidak berubah jika tutor menaikkan tarif di masa depan)
-            $table->integer('tarif_per_sesi'); 
-            $table->integer('total_harga_sesi'); // tarif_per_sesi x jumlah_sesi
-            $table->integer('biaya_layanan'); // 10% dari total_harga untuk platform
-            $table->integer('grand_total'); // total_harga_sesi + biaya_layanan yang harus dibayar murid
+            // 3. Rincian Biaya 
+            $table->integer('harga_paket');
+            $table->integer('total_harga_sesi'); 
+            $table->integer('biaya_layanan'); 
+            $table->integer('grand_total'); 
             
-            // 4. Siklus Status Booking
+            // 4. Status Booking
             $table->enum('status_pesanan', [
-                'menunggu_konfirmasi', // Tutor belum klik terima/tolak
-                'menunggu_pembayaran', // Tutor setuju, tunggu murid bayar
-                'berjalan',            // Murid sudah lunas, kelas dimulai
-                'selesai',             // Kelas beres 100%
-                'komplain',            // Ada masalah, dana ditahan untuk mediasi
-                'dibatalkan'           // Ditolak tutor atau expired
+                'menunggu_konfirmasi', 
+                'menunggu_pembayaran', 
+                'berjalan',            
+                'selesai',             
+                'komplain',            
+                'dibatalkan'           
             ])->default('menunggu_konfirmasi');
             
-            // 5. Status Keuangan (Sistem Escrow)
+            // 5. Status Keuangan
             $table->enum('status_pembayaran', [
                 'belum_bayar', 
-                'lunas_escrow', // Uang aman dipegang Admin/Sistem
-                'dicairkan'     // Uang sudah ditransfer ke tutor (Payout)
+                'lunas_escrow', 
+                'dicairkan'     
             ])->default('belum_bayar');
 
+            $table->string('bukti_bayar')->nullable();
             $table->timestamps();
         });
     }

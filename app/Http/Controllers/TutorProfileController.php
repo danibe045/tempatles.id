@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 use App\Models\TutorProfile;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class TutorProfileController extends Controller
 {
@@ -16,12 +19,10 @@ class TutorProfileController extends Controller
     {
         $user = Auth::user();
 
-        // Jika bukan tutor, tendang ke dashboard
         if ($user->role !== 'tutor') {
             return redirect()->route('dashboard');
         }
 
-        // Jika sudah isi profil, tendang ke dashboard (masuk karantina)
         if ($user->tutorProfile) {
             return redirect()->route('dashboard');
         }
@@ -30,11 +31,11 @@ class TutorProfileController extends Controller
     }
 
     /**
-     * Menyimpan data profil ke Database
+     * Menyimpan data profil Awal ke Database
      */
     public function store(Request $request)
     {
-        // 1. Validasi Input
+        // 1. Ubah validasi link_silabus menjadi link
         $request->validate([
             'phone_number' => 'required|string|max:20',
             'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
@@ -45,18 +46,16 @@ class TutorProfileController extends Controller
             'instansi' => 'required|string|max:255',
             'bidang' => 'required|string|max:255',
             'pengalaman' => 'required|string',
-            'link_silabus' => 'required|url', // GDrive Link
+            'link' => 'required|url',
             'setuju_pernyataan' => 'accepted',
         ]);
 
         $user = Auth::user();
 
-        // 2. Update No HP di tabel users
         User::where('id', $user->id)->update([
             'phone_number' => $request->phone_number
         ]);
 
-        // 3. Simpan Profil ke tabel tutor_profiles
         TutorProfile::create([
             'user_id' => $user->id,
             'jenis_kelamin' => $request->jenis_kelamin,
@@ -67,23 +66,78 @@ class TutorProfileController extends Controller
             'instansi' => $request->instansi,
             'bidang' => $request->bidang,
             'pengalaman' => $request->pengalaman,
-            'link_silabus' => $request->link_silabus,
-            
-            // Kolom JSON butuh nilai default array kosong []
-            'tingkat_siswa' => [], 
-            'metode' => [], 
-            'hari' => [], 
-            
-            // Kolom String & Int butuh default value
-            'jam' => '-',
-            'area' => '-',
-            'tarif_per_sesi' => 0,
-            
+            'link' => $request->link,
             'setuju_pernyataan' => true,
             'strike_count' => 0,
-            'status_akun' => 'pending', // <--- Langsung ubah status jadi pending (Karantina)
+            'status_akun' => 'menunggu_mou', 
         ]);
 
         return redirect()->route('dashboard');
+    }
+
+    /**
+     * Menampilkan Halaman Edit Profil di Dashboard Tutor
+     */
+    public function edit()
+    {
+        $user = Auth::user();
+        $user->load('tutorProfile'); 
+        return view('tutor.profile.edit', compact('user'));
+    }
+
+    /**
+     * Menyimpan Pembaruan Profil dari Dashboard Tutor
+     */
+    public function update(Request $request)
+    {
+        $user = Auth::user();
+
+        $request->validate([
+            'name'        => 'required|string|max:255',
+            'no_wa'       => 'required|numeric',
+            'bidang'      => 'required|string|max:255',
+            'pendidikan'  => 'required|string',
+            'universitas' => 'required|string|max:255',
+            'bio'         => 'required|string',
+            'foto'        => 'nullable|image|mimes:jpeg,png,jpg|max:2048', 
+        ]);
+
+        // Proses Upload Foto (DISIMPAN KE TABEL USERS BUKAN TUTOR_PROFILE)
+        if ($request->hasFile('foto')) {
+            if ($user->profile_photo_path && Storage::disk('public')->exists($user->profile_photo_path)) {
+                Storage::disk('public')->delete($user->profile_photo_path);
+            }
+            $path = $request->file('foto')->store('profile-photos', 'public');
+            $user->profile_photo_path = $path;
+        }
+
+        $user->name = $request->name;
+        $user->phone_number = $request->no_wa;
+        $user->save();
+
+        // Update sisanya ke tabel profil
+        $user->tutorProfile()->update([
+            'bidang'              => $request->bidang,
+            'pendidikan_terakhir' => $request->pendidikan,
+            'instansi'            => $request->universitas,
+            'pengalaman'          => $request->bio,
+        ]);
+
+        return redirect()->route('tutor.profile.edit')->with('success', 'Profil Anda berhasil diperbarui!');
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => ['required', 'current_password'], 
+            'password' => ['required', 'confirmed', Password::defaults()], 
+        ]);
+
+        $user = Auth::user();
+        $user->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        return back()->with('success', 'Password akun Anda berhasil diperbarui!');
     }
 }

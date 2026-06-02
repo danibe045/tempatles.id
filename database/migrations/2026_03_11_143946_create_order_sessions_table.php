@@ -12,18 +12,22 @@ return new class extends Migration
             $table->id();
             $table->foreignId('order_id')->constrained('orders')->onDelete('cascade');
             
-            $table->integer('pertemuan_ke'); // Contoh: 1, 2, 3, 4
-            $table->date('tanggal_jadwal');
-            $table->time('waktu_mulai');
+            $table->integer('pertemuan_ke'); 
+            
+            // 1. UBAH JADI NULLABLE (Bisa dikosongi dulu)
+            $table->date('tanggal_jadwal')->nullable();
+            $table->time('waktu_mulai')->nullable();
+            
             $table->time('waktu_selesai')->nullable();
             
-            // Status masing-masing pertemuan
+            // 2. TAMBAHKAN STATUS BARU DAN JADIKAN DEFAULT
             $table->enum('status_sesi', [
+                'belum_dijadwalkan', // <--- Tambahan baru
                 'dijadwalkan', 
-                'selesai',       // Berjalan normal
-                'absen_tutor',   // Tutor tidak datang
-                'absen_murid'    // Aturan No-Show (Murid bolos, kuota tetap hangus)
-            ])->default('dijadwalkan');
+                'selesai',       
+                'absen_tutor',   
+                'absen_murid'    
+            ])->default('belum_dijadwalkan'); // <--- Jadikan default
             
             $table->timestamps();
         });

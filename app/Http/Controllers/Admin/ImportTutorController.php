@@ -6,25 +6,32 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Imports\TutorImport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Log;
 
 class ImportTutorController extends Controller
 {
     public function import(Request $request)
     {
-        // 1. Validasi file (Pastikan file yang diupload adalah Excel/CSV)
+        // 1. Validasi File
         $request->validate([
             'file' => 'required|mimes:xlsx,xls,csv|max:5120',
         ]);
 
-        set_time_limit(300); // Perpanjang waktu eksekusi jika file besar
+        // 2. Set Limit Server agar tidak Timeout
+        set_time_limit(600); 
+        ini_set('memory_limit', '512M'); 
 
         try {
-            // 2. Lempar file ke Mesin Import (TutorImport)
+            // 3. Eksekusi Import
             Excel::import(new TutorImport, $request->file('file'));
             
-            return redirect()->back()->with('success', 'Selamat! Data tutor berhasil di-import ke sistem.');
+            return redirect()->back()->with('success', 'Data tutor berhasil diimpor ke dalam sistem.');
+            
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Waduh, gagal memproses file: ' . $e->getMessage());
+            // 4. Log error untuk investigasi
+            Log::error('Gagal Import Tutor: ' . $e->getMessage());
+            
+            return redirect()->back()->with('error', 'Terjadi kesalahan: Pastikan format file sesuai dengan template.');
         }
     }
 }

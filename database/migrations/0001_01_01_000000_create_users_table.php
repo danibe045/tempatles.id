@@ -15,8 +15,20 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            
+            // -----------------------------------------------------
+            // PENYELARASAN STRUKTUR RIIL SQL & KEBUTUHAN BARU
+            // -----------------------------------------------------
+            $table->enum('role', ['admin', 'tutor', 'murid'])->default('murid');
+            $table->string('phone_number')->nullable();
+            
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            
+            // Kolom baru tersentralisasi untuk pendataan universal
+            $table->string('profile_photo_path', 2048)->nullable();
+            $table->string('sekolah')->nullable();
+            
             $table->rememberToken();
             $table->timestamps();
         });

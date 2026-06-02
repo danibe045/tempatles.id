@@ -17,7 +17,7 @@
                             <span class="text-blue-600 font-black">tempatles.id</span> lahir dari keresahan akan sulitnya mencari pengajar berkualitas yang transparan dan fleksibel. Kami bukan sekadar platform, kami adalah jembatan yang menghubungkan semangat belajar dengan dedikasi pengajar.
                         </p>
                         <p class="text-slate-500 leading-relaxed font-medium">
-                            Misi kami sederhana: Memastikan setiap pelajar mendapatkan bimbingan terbaik tanpa harus terbebani biaya iklan atau admin yang mahal, sekaligus memberdayakan tutor untuk mandiri dalam mengelola waktu dan penghasilannya.
+                            Misi kami sederhana: Memastikan setiap pelajar mendapatkan bimbingan terbaik dengan harga transparan, sekaligus memberdayakan tutor untuk mandiri dalam mengelola waktu dan penghasilannya.
                         </p>
                     </div>
 
@@ -45,20 +45,20 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
                     {{-- Value 1 --}}
-                    <div class="p-8">
-                        <div class="w-16 h-16 mx-auto bg-white shadow-xl rounded-2xl flex items-center justify-center text-3xl mb-6">🤝</div>
+                    <div class="p-8 bg-white rounded-3xl shadow-sm border border-slate-100 hover:border-blue-200 transition-colors">
+                        <div class="w-16 h-16 mx-auto bg-blue-50 text-blue-500 rounded-2xl flex items-center justify-center text-3xl mb-6">🤝</div>
                         <h3 class="text-xl font-black text-slate-900 mb-3">Transparansi</h3>
                         <p class="text-sm text-slate-500 font-medium leading-relaxed">Tanpa biaya tersembunyi. Semua kesepakatan antara tutor dan murid dilakukan secara terbuka dan adil.</p>
                     </div>
                     {{-- Value 2 --}}
-                    <div class="p-8">
-                        <div class="w-16 h-16 mx-auto bg-white shadow-xl rounded-2xl flex items-center justify-center text-3xl mb-6">🛡️</div>
+                    <div class="p-8 bg-white rounded-3xl shadow-sm border border-slate-100 hover:border-emerald-200 transition-colors">
+                        <div class="w-16 h-16 mx-auto bg-emerald-50 text-emerald-500 rounded-2xl flex items-center justify-center text-3xl mb-6">🛡️</div>
                         <h3 class="text-xl font-black text-slate-900 mb-3">Integritas</h3>
                         <p class="text-sm text-slate-500 font-medium leading-relaxed">Kami memverifikasi setiap pengajar untuk menjamin keamanan dan kualitas pembelajaran.</p>
                     </div>
                     {{-- Value 3 --}}
-                    <div class="p-8">
-                        <div class="w-16 h-16 mx-auto bg-white shadow-xl rounded-2xl flex items-center justify-center text-3xl mb-6">🚀</div>
+                    <div class="p-8 bg-white rounded-3xl shadow-sm border border-slate-100 hover:border-orange-200 transition-colors">
+                        <div class="w-16 h-16 mx-auto bg-orange-50 text-orange-500 rounded-2xl flex items-center justify-center text-3xl mb-6">🚀</div>
                         <h3 class="text-xl font-black text-slate-900 mb-3">Inovasi</h3>
                         <p class="text-sm text-slate-500 font-medium leading-relaxed">Terus mengembangkan fitur teknologi yang memudahkan proses pencarian dan manajemen jadwal les.</p>
                     </div>
@@ -77,9 +77,15 @@
                         <p class="text-blue-200 text-lg font-medium mb-8 leading-relaxed">
                             Punya pertanyaan lebih lanjut atau ingin berkolaborasi? Kami siap mendengarkan aspirasi Anda untuk masa depan pendidikan yang lebih baik.
                         </p>
-                        <a href="https://wa.me/6285859222500" target="_blank" class="inline-flex items-center gap-3 bg-white text-blue-950 px-8 py-4 rounded-full font-black uppercase tracking-widest text-xs hover:bg-orange-500 hover:text-white transition-all duration-300">
-                            Hubungi Kami via WhatsApp
-                        </a>
+                        
+                        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                            <a href="https://wa.me/6285859222500" target="_blank" class="w-full sm:w-auto inline-flex justify-center items-center gap-3 bg-emerald-500 text-white px-8 py-4 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-emerald-600 transition-all duration-300 shadow-lg shadow-emerald-500/30">
+                                Hubungi via WhatsApp
+                            </a>
+                            <a href="{{ route('katalog.publik') }}" class="w-full sm:w-auto inline-flex justify-center items-center gap-3 bg-white text-blue-950 px-8 py-4 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-blue-50 transition-all duration-300">
+                                Mulai Eksplorasi Tutor
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -15,4 +15,10 @@ class TutorWallet extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    // Relasi ke Riwayat Mutasi Dompet
+    public function histories()
+    {
+        return $this->hasMany(WalletHistory::class, 'wallet_id');
+    }
 }

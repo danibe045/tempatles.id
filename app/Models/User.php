@@ -22,7 +22,11 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
-        'phone_number', // Tambahkan phone_number juga ya karena tadi ada di migration
+        'phone_number',
+        'profile_photo_path',
+        'sekolah',
+        'otp_code',
+        'otp_expires_at',
     ];
 
     /**
@@ -47,8 +51,6 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-
-    // --- BAGIAN RELASI (COPY DARI SINI) ---
 
     // Relasi ke Profil Tutor (1 User punya 1 Profil)
     public function tutorProfile()

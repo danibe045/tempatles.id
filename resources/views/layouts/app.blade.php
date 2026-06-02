@@ -42,7 +42,7 @@
                 {{ $slot }}
             </main>
 
-            <footer class="py-4 text-center text-[10px] font-semibold tracking-wider text-blue-200/30 border-t border-white/5 bg-[#0f172a]/50 mt-auto uppercase">
+            <footer class="py-4 text-center text-[10px] font-semibold tracking-wider text-blue-950 border-t border-white/5 bg-slate-50 mt-auto uppercase">
                 &copy; {{ date('Y') }} Tempatles.id - Admin Panel
             </footer>
         </div>

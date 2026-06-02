@@ -9,43 +9,35 @@ class AdminDashboardController extends Controller
 {
     public function index(Request $request)
     {
-        // 1. Tangkap input dari form filter
         $search = $request->input('search');
-        $mapel = $request->input('mapel');
+        $status = $request->input('status'); 
 
-        // 2. Hitung Statistik (Dihitung dari SELURUH data tanpa filter status)
-        // Kita gunakan nama kolom 'status_akun' sesuai database barumu
-        $countPending = TutorProfile::where('status_akun', 'pending')->count();
-        $countMou     = TutorProfile::where('status_akun', 'menunggu_mou')->count();
-        $countAktif   = TutorProfile::where('status_akun', 'aktif')->count();
+        // Hitung Statistik (Tetap butuh untuk card di atas)
+        $countMou   = TutorProfile::where('status_akun', 'menunggu_mou')->count();
+        $countAktif = TutorProfile::where('status_akun', 'aktif')->count();
 
-        // 3. Siapkan query untuk TABEL (Hanya yang BELUM aktif)
+        // TABEL: HANYA TAMPILKAN YANG BELUM AKTIF (Antrean Tugas Admin)
         $query = TutorProfile::with('user')
-            ->where('status_akun', '!=', 'aktif') // Menghilangkan yang sudah aktif dari tabel
-            ->latest();
+                ->where('status_akun', '!=', 'aktif') 
+                ->latest();
 
-        // 4. Logika Filter Pencarian (Mencari di tabel relasi User)
+        if ($status) {
+            $query->where('status_akun', $status);
+        }
+
         if ($search) {
             $query->whereHas('user', function($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
+                ->orWhere('email', 'like', "%{$search}%");
             });
         }
 
-        // 5. Logika Filter Mata Pelajaran
-        if ($mapel) {
-            $query->where('bidang', 'like', "%{$mapel}%");
-        }
+        $tutors = $query->get();
 
-        // 6. Ambil data dengan Pagination
-        $tutors = $query->paginate(10)->withQueryString();
-
-        // 7. Kirim variabel ke view
         return view('admin.dashboard', compact(
             'tutors', 
             'search', 
-            'mapel', 
-            'countPending', 
+            'status',
             'countMou', 
             'countAktif'
         ));
@@ -53,8 +45,49 @@ class AdminDashboardController extends Controller
 
     public function show($id)
     {
-        // Kita arahkan ke halaman detail yang profesional tadi
         $tutor = TutorProfile::with('user')->findOrFail($id);
         return view('admin.katalog-tutor.show', compact('tutor')); 
+    }
+
+    // Fungsi sakti untuk Admin merubah status kemitraan Tutor
+    public function updateStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status_akun' => 'required|in:aktif,dibekukan,banned,menunggu_mou'
+        ]);
+
+        $tutor = TutorProfile::findOrFail($id);
+        
+        $tutor->update([
+            'status_akun' => $request->status_akun
+        ]);
+
+        // Pesan sukses yang dinamis
+        if ($request->status_akun == 'aktif') {
+            $pesan = 'Selamat! Tutor berhasil disetujui dan sekarang berstatus Aktif.';
+        } elseif ($request->status_akun == 'banned') {
+            $pesan = 'Pendaftaran tutor ditolak / diblokir.';
+        } else {
+            $pesan = 'Status tutor berhasil diubah menjadi ' . str_replace('_', ' ', $request->status_akun);
+        }
+
+        return redirect()->back()->with('success', $pesan);
+    }
+
+    // Fungsi untuk menghapus pendaftar yang tidak memenuhi syarat
+    public function destroyTutor($id)
+    {
+        $tutor = TutorProfile::findOrFail($id);
+        $user = $tutor->user;
+
+        // Kita hapus User-nya. Karena di database sudah pakai "onDelete cascade", 
+        // maka profil tutor dan semua file terkaitnya akan otomatis ikut terhapus bersih.
+        if ($user) {
+            $user->delete(); 
+        } else {
+            $tutor->delete();
+        }
+
+        return redirect()->back()->with('success', 'Data pendaftar berhasil dihapus permanen dari sistem.');
     }
 }

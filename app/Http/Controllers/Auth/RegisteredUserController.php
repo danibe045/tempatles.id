@@ -42,22 +42,10 @@ class RegisteredUserController extends Controller
                 'instansi' => ['required', 'string', 'max:255'],
                 'bidang' => ['required', 'string', 'max:255'],
                 'pengalaman' => ['required', 'string'],
-                'link_silabus' => ['required', 'url'],
-                
-                // Tambahan Validasi untuk Kolom Baru
-                'tingkat_siswa' => ['required', 'string'],
-                'metode' => ['required', 'string'],
-                'hari' => ['required', 'string'],
-                'jam' => ['required', 'string', 'max:255'],
-                'area' => ['required', 'string', 'max:255'],
+                'link' => ['required', 'url'],
                 
                 'setuju_pernyataan' => ['accepted'],
             ]);
-
-            // Format input string berkoma menjadi Array (Sesuai kebutuhan database JSON)
-            $tingkat_array = array_map('trim', explode(',', $request->tingkat_siswa));
-            $metode_array = array_map('trim', explode(',', $request->metode));
-            $hari_array = array_map('trim', explode(',', $request->hari));
 
             $user = User::create([
                 'name' => $request->name,
@@ -77,19 +65,11 @@ class RegisteredUserController extends Controller
                 'instansi' => $request->instansi,
                 'bidang' => $request->bidang,
                 'pengalaman' => $request->pengalaman,
-                'link_silabus' => $request->link_silabus,
+                'link' => $request->link,
                 
-                // Simpan Kolom Baru
-                'tingkat_siswa' => $tingkat_array,
-                'metode' => $metode_array,
-                'hari' => $hari_array,
-                'jam' => $request->jam,
-                'area' => $request->area,
-                
-                'tarif_per_sesi' => 0,
                 'setuju_pernyataan' => true,
                 'strike_count' => 0,
-                'status_akun' => 'pending', 
+                'status_akun' => 'menunggu_mou', 
             ]);
 
             event(new Registered($user));

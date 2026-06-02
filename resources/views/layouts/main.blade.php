@@ -3,7 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    {{-- KEAMANAN: CSRF Token wajib untuk form AJAX Laravel --}}
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    {{-- SEO: Mengambil tag meta dari view (seperti welcome.blade.php) --}}
+    @yield('meta')
+
     <title>@yield('title', 'tempatles.id - Platform Les Privat')</title>
+    
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="icon" href="{{ asset('img/logo.png') }}" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -36,7 +44,11 @@
 
             {{-- Tengah: Menu Desktop --}}
             <div class="hidden lg:flex items-center space-x-10 text-[13px] font-bold uppercase tracking-widest text-slate-500">
-                <a href="/" class="{{ request()->is('/') ? 'text-blue-600 border-b-2 border-blue-600 pb-1' : 'hover:text-blue-600 transition-colors' }}">Home</a>
+                {{-- TAMPILKAN MENU HOME HANYA UNTUK PENGUNJUNG TAMU (GUEST) --}}
+                @guest
+                    <a href="/" class="{{ request()->is('/') ? 'text-blue-600 border-b-2 border-blue-600 pb-1' : 'hover:text-blue-600 transition-colors' }}">Home</a>
+                @endguest
+
                 <a href="{{ route('katalog.publik') }}" class="{{ request()->routeIs('katalog.publik') ? 'text-blue-600 border-b-2 border-blue-600 pb-1' : 'hover:text-blue-600 transition-colors' }}">Cari Tutor</a>
                 
                 @auth
@@ -56,13 +68,27 @@
                             <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span> Online
                         </p>
                     </div>
-                    <div class="w-11 h-11 bg-gradient-to-br from-blue-600 to-blue-800 text-white rounded-xl flex items-center justify-center font-black text-base shadow-lg shadow-blue-200 border-2 border-white">
-                        {{ strtoupper(substr(auth()->user()->name ?? 'M', 0, 1)) }}
-                    </div>
+                    
+                    {{-- AVATAR INTERAKTIF (BISA DIKLIK UNTUK BUKA MODAL PROFIL) --}}
+                    <button type="button" onclick="document.getElementById('modal-profil')?.showModal()" class="w-11 h-11 bg-gradient-to-br from-blue-600 to-blue-800 text-white rounded-xl flex items-center justify-center font-black text-base shadow-lg shadow-blue-200 border-2 border-white overflow-hidden relative group transition-transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-500/20" title="Klik untuk edit profil">
+                        @if(auth()->user()->profile_photo_path ?? false)
+                            <img src="{{ asset('storage/' . auth()->user()->profile_photo_path) }}" alt="Avatar" class="w-full h-full object-cover">
+                        @else
+                            {{ strtoupper(substr(auth()->user()->name ?? 'M', 0, 1)) }}
+                        @endif
+                        
+                        {{-- Overlay gelap tipis & ikon pensil saat di-hover --}}
+                        <div class="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                        </div>
+                    </button>
+                    
                     <div class="hidden md:block h-8 w-px bg-slate-200 mx-1"></div>
-                    <form method="POST" action="{{ route('logout') }}" class="hidden md:block">
+
+                    {{-- Tombol Logout (Desktop) --}}
+                    <form id="logout-form" method="POST" action="{{ route('logout') }}" class="hidden md:block">
                         @csrf
-                        <button type="submit" class="group flex items-center justify-center w-10 h-10 bg-white border border-slate-200 text-slate-400 rounded-xl hover:bg-rose-50 hover:text-rose-500 hover:border-rose-200 transition-all shadow-sm" title="Keluar">
+                        <button type="button" onclick="confirmLogout('logout-form')" class="group flex items-center justify-center w-10 h-10 bg-white border border-slate-200 text-slate-400 rounded-xl hover:bg-rose-50 hover:text-rose-500 hover:border-rose-200 transition-all shadow-sm" title="Keluar">
                             <svg class="w-5 h-5 ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
                         </button>
                     </form>
@@ -86,14 +112,26 @@
         {{-- Dropdown Mobile Menu --}}
         <div x-show="mobileMenuOpen" style="display:none;" x-transition class="lg:hidden bg-white border-t border-slate-100 shadow-xl absolute w-full left-0 z-40">
             <div class="flex flex-col px-6 py-4 space-y-4 text-sm font-bold uppercase tracking-widest text-slate-500">
-                <a href="/" class="{{ request()->is('/') ? 'text-blue-600' : 'hover:text-blue-600' }}">Home</a>
+                {{-- MENU HOME MOBILE JUGA DISEMBUNYIKAN SAAT LOGIN --}}
+                @guest
+                    <a href="/" class="{{ request()->is('/') ? 'text-blue-600' : 'hover:text-blue-600' }}">Home</a>
+                @endguest
+                
                 <a href="{{ route('katalog.publik') }}" class="{{ request()->routeIs('katalog.publik') ? 'text-blue-600' : 'hover:text-blue-600' }}">Cari Tutor</a>
+                
                 @auth
                     <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'text-blue-600' : 'hover:text-blue-600' }}">Ruang Belajar</a>
+                    
+                    {{-- MENU PROFIL MOBILE PADA DROPDOWN --}}
+                    <button type="button" @click="mobileMenuOpen = false; document.getElementById('modal-profil')?.showModal()" class="text-left text-blue-600 hover:text-blue-800 font-bold uppercase tracking-widest">
+                        Pengaturan Profil
+                    </button>
+                    
                     <hr class="border-slate-100">
-                    <form method="POST" action="{{ route('logout') }}" class="w-full">
+                    {{-- Tombol Logout (Mobile) --}}
+                    <form id="logout-form-mobile" method="POST" action="{{ route('logout') }}" class="w-full">
                         @csrf
-                        <button type="submit" class="text-rose-500 hover:text-rose-700 text-left w-full font-bold uppercase tracking-widest">Keluar Akun</button>
+                        <button type="button" onclick="confirmLogout('logout-form-mobile')" class="text-rose-500 hover:text-rose-700 text-left w-full font-bold uppercase tracking-widest">Keluar Akun</button>
                     </form>
                 @else
                     <a href="{{ route('layanan') }}" class="{{ request()->routeIs('layanan') ? 'text-blue-600' : 'hover:text-blue-600' }}">Layanan Kami</a>
@@ -137,5 +175,53 @@
             Copyright &copy; {{ date('Y') }} <span class="text-blue-600">tempatles.id</span>
         </div>
     </footer>
+
+    {{-- MEMUAT MODAL PROFIL DARI FOLDER PENGGUNA TERKAIT --}}
+    @auth
+        @if(auth()->user()->role === 'murid')
+            @include('user.modal-profil')
+        @endif
+    @endauth
+
+    {{-- SweetAlert2 Library --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script>
+        // Fungsi Global untuk Konfirmasi Logout
+        function confirmLogout(formId) {
+            Swal.fire({
+                title: 'Mau keluar sekarang?',
+                text: "Kami akan menyimpan semua progres belajarmu dengan aman.",
+                icon: 'question',
+                iconColor: '#f97316', // Warna orange-500
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Sampai Jumpa!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true,
+                customClass: {
+                    popup: 'rounded-[2.5rem] shadow-2xl border-4 border-orange-50/50',
+                    confirmButton: 'bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all shadow-lg shadow-orange-500/30',
+                    cancelButton: 'bg-slate-100 hover:bg-slate-200 text-slate-600 px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all border border-slate-200'
+                },
+                buttonsStyling: false
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Munculkan loading spinner saat proses logout
+                    Swal.fire({
+                        title: 'Memproses...',
+                        text: 'Sedang mengeluarkan akun Anda',
+                        allowOutsideClick: false,
+                        showConfirmButton: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                    
+                    // Submit form spesifik yang diklik (desktop atau mobile)
+                    document.getElementById(formId).submit();
+                }
+            });
+        }
+    </script>
 </body>
 </html>

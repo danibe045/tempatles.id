@@ -17,6 +17,7 @@ return new class extends Migration
             // Isi laporan Tutor
             $table->text('catatan_materi');
             $table->string('foto_bukti_path'); // Lokasi file foto disimpan di server
+            $table->string('file_materi')->nullable(); 
             
             // Kolom ini yang akan diincar oleh Cron Job untuk menghitung keterlambatan 24 jam
             $table->timestamp('waktu_submit')->useCurrent(); 

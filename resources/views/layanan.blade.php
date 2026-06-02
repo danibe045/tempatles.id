@@ -92,13 +92,13 @@
                                 <div class="w-12 h-12 shrink-0 bg-white rounded-xl shadow-sm flex items-center justify-center text-emerald-500 font-black text-xl border border-emerald-100">⚡</div>
                                 <div>
                                     <h4 class="text-lg font-black text-slate-900">Skill Digital & Terapan</h4>
-                                    <p class="text-sm text-slate-500 font-medium mt-1">Tingkatkan value diri dengan kursus Web Programming (Coding), Desain Grafis, SEO, hingga praktik public speaking.</p>
+                                    <p class="text-sm text-slate-500 font-medium mt-1">Tingkatkan value diri dengan kursus Programming (Coding), Desain Grafis, SEO, hingga praktik public speaking.</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                     
-                    {{-- Visual/Ilustrasi Placeholder (Diganti Kotak Estetik) --}}
+                    {{-- Visual/Ilustrasi Placeholder --}}
                     <div class="w-full md:w-1/2 relative">
                         <div class="aspect-square bg-gradient-to-tr from-blue-200 to-blue-50 rounded-[3rem] p-8 relative flex items-center justify-center shadow-inner border border-blue-100">
                             <div class="grid grid-cols-2 gap-4 w-full h-full">
@@ -132,14 +132,14 @@
                             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                         </div>
                         <h4 class="font-black text-slate-900 mb-2">Tutor Terverifikasi</h4>
-                        <p class="text-xs text-slate-500 font-medium">Identitas dan kualifikasi tutor telah melalui proses pengecekan admin.</p>
+                        <p class="text-xs text-slate-500 font-medium">Identitas dan kualifikasi tutor telah melalui proses pengecekan ketat oleh admin.</p>
                     </div>
                     <div class="p-6">
                         <div class="w-14 h-14 mx-auto bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-4">
                             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         </div>
                         <h4 class="font-black text-slate-900 mb-2">Bebas Atur Jadwal</h4>
-                        <p class="text-xs text-slate-500 font-medium">Sepakati waktu dan tempat langsung dengan tutor pilihanmu.</p>
+                        <p class="text-xs text-slate-500 font-medium">Sepakati waktu dan tempat langsung dengan tutor pilihanmu secara fleksibel.</p>
                     </div>
                     <div class="p-6">
                         <div class="w-14 h-14 mx-auto bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-4">
@@ -148,14 +148,27 @@
                         <h4 class="font-black text-slate-900 mb-2">Garansi Kecocokan</h4>
                         <p class="text-xs text-slate-500 font-medium">Bebas mencari dan berganti tutor lain jika merasa metode ajarnya kurang pas.</p>
                     </div>
+                    
+                    {{-- PERBAIKAN LOGIKA DISINI: Menjadi Pembayaran Aman Escrow --}}
                     <div class="p-6">
                         <div class="w-14 h-14 mx-auto bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-4">
                             <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
                         </div>
-                        <h4 class="font-black text-slate-900 mb-2">Tanpa Biaya Admin</h4>
-                        <p class="text-xs text-slate-500 font-medium">Biaya yang dibayarkan 100% murni untuk honor mengajar tutor.</p>
+                        <h4 class="font-black text-slate-900 mb-2">Pembayaran Escrow</h4>
+                        <p class="text-xs text-slate-500 font-medium">Dana aman di sistem kami, dan baru diteruskan ke tutor setelah kelas selesai.</p>
                     </div>
                 </div>
+
+                {{-- CTA BAWAH AGAR TIDAK JALAN BUNTU --}}
+                <div class="mt-16 pt-10 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <a href="{{ route('katalog.publik') }}" class="px-8 py-4 bg-orange-500 text-white rounded-xl font-black uppercase tracking-widest text-xs hover:bg-orange-600 transition-all shadow-xl shadow-orange-500/30 transform hover:-translate-y-1">
+                        Cari Tutor Sekarang
+                    </a>
+                    <a href="{{ route('register') }}?role=tutor" class="px-8 py-4 bg-white border-2 border-slate-200 text-slate-600 rounded-xl font-black uppercase tracking-widest text-xs hover:border-blue-600 hover:text-blue-600 transition-all shadow-sm">
+                        Bergabung Menjadi Tutor
+                    </a>
+                </div>
+
             </div>
         </section>
 

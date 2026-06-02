@@ -20,8 +20,8 @@ return new class extends Migration
             // Nominal yang ditarik
             $table->integer('nominal');
             
-            // Snapshot Data Rekening (Biar aman kalau tutor ganti rekening di profilnya)
-            $table->string('nama_bank'); // Contoh: BCA, Mandiri, BCA Digital
+            // Snapshot Data Rekening
+            $table->string('nama_bank');
             $table->string('nomor_rekening');
             $table->string('nama_pemilik_rekening');
             

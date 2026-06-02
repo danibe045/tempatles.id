@@ -19,6 +19,8 @@ return new class extends Migration
             $table->integer('jumlah_sesi');
             $table->string('domisili');
             $table->enum('metode', ['Online', 'Offline']);
+            $table->string('hari');
+            $table->string('jam');
             $table->integer('harga_nett');
             $table->text('deskripsi');
             

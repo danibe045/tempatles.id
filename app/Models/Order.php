@@ -12,14 +12,18 @@ class Order extends Model
     protected $fillable = [
         'murid_id', 
         'tutor_id', 
+        'tutor_package_id',
         'mata_pelajaran', 
         'jumlah_sesi', 
-        'tarif_per_sesi', 
+        'harga_paket', 
         'total_harga_sesi', 
         'biaya_layanan', 
         'grand_total', 
         'status_pesanan', 
-        'status_pembayaran'
+        'status_pembayaran',
+        'bukti_bayar',
+        'jadwal_request',
+        'catatan'
     ];
 
     // Relasi ke Murid (User)
@@ -32,6 +36,12 @@ class Order extends Model
     public function tutor()
     {
         return $this->belongsTo(User::class, 'tutor_id');
+    }
+
+    // Relasi ke Paket yang dibeli
+    public function package()
+    {
+        return $this->belongsTo(TutorPackage::class, 'tutor_package_id');
     }
 
     // Satu Order punya banyak Sesi Pertemuan (misal 4 atau 8 sesi)

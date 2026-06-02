@@ -24,19 +24,40 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
+        // 1. Cek kecocokan email dan password
         $request->authenticate();
 
+        // --- 2. CEK STATUS BANNED KHUSUS TUTOR ---
+        $user = $request->user();
+        
+        if ($user->role === 'tutor') {
+            $profile = \App\Models\TutorProfile::where('user_id', $user->id)->first();
+            
+            // Jika profil ditemukan dan statusnya banned, langsung tendang keluar
+            if ($profile && $profile->status_akun === 'banned') {
+                Auth::guard('web')->logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                return back()->withErrors([
+                    'email' => 'Maaf, akun Tutor Anda telah diblokir secara permanen oleh Admin karena pelanggaran.',
+                ]);
+            }
+        }
+        // ------------------------------------------
+
+        // 3. Jika aman, buatkan sesi login
         $request->session()->regenerate();
 
-        // Cek apakah user yang baru saja login punya akses admin
+        // 4. Cek apakah user yang baru saja login punya akses admin
         if ($request->user()->can('access-admin')) {
             // Lempar ke Dashboard Admin
             return redirect()->intended(route('admin.dashboard', absolute: false));
         }
 
-        // Kalau user biasa/murid/tutor
+        // Kalau user biasa/murid/tutor yang aman
         return redirect()->intended(route('dashboard', absolute: false));
-    }
+    }    
 
     /**
      * Destroy an authenticated session.

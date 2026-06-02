@@ -13,6 +13,7 @@ class TeachingJournal extends Model
         'order_session_id', 
         'catatan_materi', 
         'foto_bukti_path', 
+        'file_materi', // <--- INI TAMBAHAN UNTUK UPLOAD PDF
         'waktu_submit'
     ];
 

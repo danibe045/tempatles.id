@@ -16,4 +16,9 @@ class Strike extends Model
     {
         return $this->belongsTo(User::class, 'tutor_id');
     }
+
+    public function tutorProfile()
+    {
+        return $this->hasOne(TutorProfile::class, 'user_id', 'tutor_id');
+    }
 }

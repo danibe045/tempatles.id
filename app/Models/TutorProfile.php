@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany; // 👈 1. Tambahkan ini untuk HasMany
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class TutorProfile extends Model
 {
@@ -21,25 +21,17 @@ class TutorProfile extends Model
         'instansi',
         'bidang',
         'pengalaman',
-        'tingkat_siswa',
-        'metode',
-        'hari',
-        'jam',
-        'area',
-        'tarif_per_sesi',
-        'link_silabus',
+        'link',
+        'is_manual',
         'setuju_pernyataan',
         'strike_count',
         'status_akun',
     ];
 
-    // Otomatis mengubah JSON dari database menjadi Array di Laravel, dan sebaliknya
+    // Otomatis mengubah tipe data saat ditarik dari database
     protected $casts = [
-        'tingkat_siswa' => 'array',
-        'metode' => 'array',
-        'hari' => 'array',
         'setuju_pernyataan' => 'boolean',
-        'tarif_per_sesi' => 'integer',
+        'is_manual' => 'boolean',
         'strike_count' => 'integer',
     ];
 
@@ -48,11 +40,14 @@ class TutorProfile extends Model
         return $this->belongsTo(User::class);
     }
 
-    // 2. 👇 TAMBAHKAN FUNGSI INI UNTUK MENGATASI ERROR 👇
     public function packages(): HasMany
     {
-        // PENTING: Ganti 'TutorPackage' dengan nama Model paket harga milik Mas Dani.
-        // Jika nama model paketnya adalah 'Package', ubah menjadi Package::class
         return $this->hasMany(TutorPackage::class, 'user_id', 'user_id');
     }
+
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class, 'tutor_id', 'user_id');
+    }
+
 }
